@@ -63,7 +63,7 @@ class Settings:
     APP_NAME: str = os.getenv("APP_NAME", "ArtGen FastAPI Service")
     ENV: Environment = os.getenv("ENV", Environment.DEVELOPMENT)
     DEBUG: bool = os.getenv("DEBUG", "true").lower() == "true"
-    LOG_LEVEL: str = os.getenv("LOG_LEVEL", LogLevel.INFO)
+    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
     
     # API settings
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
@@ -74,8 +74,8 @@ class Settings:
     
     # Rate limiting
     RATE_LIMIT_ENABLED: bool = os.getenv("RATE_LIMIT_ENABLED", "true").lower() == "true"
-    RATE_LIMIT_REQUESTS: int = int(os.getenv("RATE_LIMIT_REQUESTS", "20"))
-    RATE_LIMIT_PERIOD: int = int(os.getenv("RATE_LIMIT_PERIOD", "3600"))
+    RATE_LIMIT_REQUESTS: int = int(os.getenv("RATE_LIMIT_REQUESTS", "20").split("#")[0].strip())
+    RATE_LIMIT_PERIOD: int = int(os.getenv("RATE_LIMIT_PERIOD", "3600").split("#")[0].strip())
     
     # Validate settings
     def validate(self):
