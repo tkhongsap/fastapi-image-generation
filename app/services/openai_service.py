@@ -1,25 +1,83 @@
 import logging
 import base64
-from typing import List, Optional, Dict, Any, Union
+from typing import List, Optional, Dict, Any, Union, Tuple
 from openai import OpenAI, AsyncOpenAI
 from openai.types.images_response import ImagesResponse
 import asyncio
 import httpx
+import os
+import re
 from app.core.config import settings, ImageModel, ImageSize, ImageQuality, ImageFormat
 
 logger = logging.getLogger(__name__)
+
+# Global client variables
+client = None
+async_client = None
 
 class OpenAIService:
     """Service to handle interactions with OpenAI API for image generation."""
     
     def __init__(self):
         """Initialize the OpenAI client with API key from settings."""
-        self.api_key = settings.OPENAI_API_KEY
-        self.client = OpenAI(api_key=self.api_key)
-        self.async_client = AsyncOpenAI(api_key=self.api_key)
+        # Initialize the OpenAI clients
+        self.api_key = self._clean_api_key(settings.OPENAI_API_KEY)
+        self.initialized = False
+        self.init_clients()
         
-        # Log initialization (without API key)
-        logger.info(f"OpenAI service initialized with API key: {'set' if self.api_key else 'not set'}")
+    def _clean_api_key(self, api_key: str) -> str:
+        """
+        Clean the API key by removing any whitespace, newlines or extra characters.
+        
+        Args:
+            api_key: The raw API key possibly containing whitespace
+            
+        Returns:
+            Cleaned API key
+        """
+        if not api_key:
+            return ""
+        
+        # Remove all whitespace, newlines, and carriage returns
+        cleaned_key = re.sub(r'\s+', '', api_key)
+        
+        # Check if key appears truncated or malformed
+        if len(cleaned_key) < 20:  # Most API keys are longer than this
+            logger.warning("API key appears to be too short after cleaning. Check your .env file format.")
+        
+        return cleaned_key
+        
+    def init_clients(self):
+        """Initialize OpenAI clients with proper error handling"""
+        global client, async_client
+        
+        try:
+            if not self.api_key:
+                logger.error("❌ OPENAI_API_KEY is not set or empty. Check your .env file.")
+                self.initialized = False
+                return
+            
+            # Preview API key for logging (masking most of it)
+            key_preview = f"{self.api_key[:7]}...{self.api_key[-4:]}" if len(self.api_key) > 11 else "***masked***"
+            is_project_based_key = self.api_key.startswith("sk-")
+            
+            logger.info(f"OpenAI API key detected: {key_preview} ({'project-based' if is_project_based_key else 'custom format'})")
+            
+            # Initialize the clients
+            client = OpenAI(api_key=self.api_key)
+            async_client = AsyncOpenAI(api_key=self.api_key)
+            self.client = client
+            self.async_client = async_client
+            
+            # Mark as successfully initialized
+            self.initialized = True
+            logger.info(f"OpenAI service initialized with API key: {'set' if self.api_key else 'not set'}")
+            
+        except Exception as e:
+            logger.error(f"❌ Error initializing OpenAI client: {str(e)}")
+            self.initialized = False
+            self.client = None
+            self.async_client = None
     
     async def generate_image(
         self,
@@ -47,6 +105,12 @@ class OpenAIService:
             Dictionary containing generated image data and metadata
         """
         try:
+            # Check if initialized properly
+            if not self.initialized or not self.async_client:
+                self.init_clients()
+                if not self.initialized:
+                    raise ValueError("OpenAI client is not properly initialized. Check your API key.")
+                
             logger.info(f"Generating image with prompt: '{prompt[:50]}...' using model: {model}")
             
             # Validate n is within limits
@@ -126,6 +190,12 @@ class OpenAIService:
             Dictionary containing edited image data and metadata
         """
         try:
+            # Check if initialized properly
+            if not self.initialized or not self.async_client:
+                self.init_clients()
+                if not self.initialized:
+                    raise ValueError("OpenAI client is not properly initialized. Check your API key.")
+                    
             logger.info(f"Editing image with prompt: '{prompt[:50]}...' using model: {model}")
             
             # DALL-E-2 is the only model that supports edits at the moment
@@ -206,6 +276,12 @@ class OpenAIService:
             Dictionary containing variation image data and metadata
         """
         try:
+            # Check if initialized properly
+            if not self.initialized or not self.async_client:
+                self.init_clients()
+                if not self.initialized:
+                    raise ValueError("OpenAI client is not properly initialized. Check your API key.")
+                    
             logger.info(f"Creating variations of image using model: {model}")
             
             # DALL-E-2 is the only model that supports variations at the moment
