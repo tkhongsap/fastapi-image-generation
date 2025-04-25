@@ -38,6 +38,15 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             padding: 20px;
             min-height: 400px;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .scrollable-gallery {
+            overflow-y: auto;
+            flex-grow: 1;
+            padding-right: 5px;
         }
         .btn-primary {
             background-color: #3b71ca;
@@ -101,12 +110,36 @@
             right: 20px;
             z-index: 1050;
         }
+        /* Custom scrollbar for the gallery */
+        .scrollable-gallery::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scrollable-gallery::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .scrollable-gallery::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+        .scrollable-gallery::-webkit-scrollbar-thumb:hover {
+            background: #a0a0a0;
+        }
+        .dropdown-menu {
+            min-width: 200px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="container">
-            <div class="logo">ArtGen</div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="logo">ArtGen</div>
+                <div>
+                    <a href="/docs/api" class="btn btn-outline-secondary btn-sm">API Docs</a>
+                    <a href="/admin" class="btn btn-outline-primary btn-sm ms-2">Admin Dashboard</a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -224,8 +257,10 @@
                     </div>
                     
                     <!-- Results -->
-                    <div id="resultsContainer" class="row" style="display: none;">
-                        <!-- Images will be added here dynamically -->
+                    <div class="scrollable-gallery">
+                        <div id="resultsContainer" class="row" style="display: none;">
+                            <!-- Images will be added here dynamically -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -501,11 +536,27 @@
                     const actionsDiv = document.createElement('div');
                     actionsDiv.className = 'image-actions';
                     
-                    // Download button
+                    // Download dropdown
+                    const downloadGroup = document.createElement('div');
+                    downloadGroup.className = 'dropdown';
+                    
                     const downloadBtn = document.createElement('button');
-                    downloadBtn.className = 'btn btn-sm btn-outline-primary';
+                    downloadBtn.className = 'btn btn-sm btn-outline-primary dropdown-toggle';
                     downloadBtn.textContent = 'Download';
-                    downloadBtn.addEventListener('click', () => {
+                    downloadBtn.setAttribute('data-bs-toggle', 'dropdown');
+                    downloadBtn.setAttribute('aria-expanded', 'false');
+                    
+                    const downloadMenu = document.createElement('ul');
+                    downloadMenu.className = 'dropdown-menu';
+                    
+                    // Regular download option
+                    const regularDownload = document.createElement('li');
+                    const regularLink = document.createElement('a');
+                    regularLink.className = 'dropdown-item';
+                    regularLink.href = '#';
+                    regularLink.textContent = 'Download Image';
+                    regularLink.addEventListener('click', (e) => {
+                        e.preventDefault();
                         // Create temporary link to download image
                         const link = document.createElement('a');
                         link.href = img.src;
@@ -514,6 +565,70 @@
                         link.click();
                         document.body.removeChild(link);
                     });
+                    regularDownload.appendChild(regularLink);
+                    downloadMenu.appendChild(regularDownload);
+                    
+                    // Transparent background option (for PNG only)
+                    if (imageData.filetype === 'png') {
+                        const transparentDownload = document.createElement('li');
+                        const transparentLink = document.createElement('a');
+                        transparentLink.className = 'dropdown-item';
+                        transparentLink.href = '#';
+                        transparentLink.textContent = 'Download with Transparent Background';
+                        transparentLink.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            
+                            // We need to make a new request with transparent background
+                            const transparentRequest = {
+                                prompt: document.getElementById('prompt').value,
+                                model: document.getElementById('model').value,
+                                n: 1,
+                                size: imageData.size,
+                                quality: document.getElementById('quality').value,
+                                format: 'png',
+                                background: 'transparent'
+                            };
+                            
+                            // Show a mini-loading indicator on the button
+                            transparentLink.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                            
+                            fetch('/api/v1/generate', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(transparentRequest)
+                            })
+                            .then(response => {
+                                if (!response.ok) throw new Error('Failed to generate transparent image');
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.images && data.images.length > 0) {
+                                    const transparentImg = `data:image/png;base64,${data.images[0].b64_json}`;
+                                    const link = document.createElement('a');
+                                    link.href = transparentImg;
+                                    link.download = `transparent-image-${Date.now()}.png`;
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
+                                }
+                                transparentLink.textContent = 'Download with Transparent Background';
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                transparentLink.textContent = 'Failed - Try Again';
+                                setTimeout(() => {
+                                    transparentLink.textContent = 'Download with Transparent Background';
+                                }, 2000);
+                            });
+                        });
+                        transparentDownload.appendChild(transparentLink);
+                        downloadMenu.appendChild(transparentDownload);
+                    }
+                    
+                    downloadGroup.appendChild(downloadBtn);
+                    downloadGroup.appendChild(downloadMenu);
                     
                     // Copy URL button
                     const copyBtn = document.createElement('button');
@@ -533,7 +648,7 @@
                             });
                     });
                     
-                    actionsDiv.appendChild(downloadBtn);
+                    actionsDiv.appendChild(downloadGroup);
                     actionsDiv.appendChild(copyBtn);
                     cardDiv.appendChild(actionsDiv);
                     

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtGen Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-weight: 700;
+            font-size: 24px;
+            color: #3b71ca;
+        }
+        .dashboard-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #3b71ca;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .nav-pills .nav-link.active {
+            background-color: #3b71ca;
+        }
+        .table th {
+            border-top: none;
+        }
+        .progress {
+            height: 8px;
+        }
+        .progress-bar {
+            background-color: #3b71ca;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="logo">ArtGen Admin</div>
+                <div>
+                    <button class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-gear"></i> Settings
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm ms-2">
+                        <i class="bi bi-box-arrow-left"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 mb-4">
+                <div class="dashboard-card">
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Admin">
+                        <div>
+                            <h6 class="mb-0">Admin User</h6>
+                            <small class="text-muted">Administrator</small>
+                        </div>
+                    </div>
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <button class="nav-link active mb-2" id="v-pills-overview-tab" data-bs-toggle="pill" data-bs-target="#v-pills-overview" type="button" role="tab" aria-controls="v-pills-overview" aria-selected="true">
+                            <i class="bi bi-speedometer2 me-2"></i> Overview
+                        </button>
+                        <button class="nav-link mb-2" id="v-pills-users-tab" data-bs-toggle="pill" data-bs-target="#v-pills-users" type="button" role="tab" aria-controls="v-pills-users" aria-selected="false">
+                            <i class="bi bi-people me-2"></i> Users
+                        </button>
+                        <button class="nav-link mb-2" id="v-pills-usage-tab" data-bs-toggle="pill" data-bs-target="#v-pills-usage" type="button" role="tab" aria-controls="v-pills-usage" aria-selected="false">
+                            <i class="bi bi-graph-up me-2"></i> Usage Analytics
+                        </button>
+                        <button class="nav-link mb-2" id="v-pills-costs-tab" data-bs-toggle="pill" data-bs-target="#v-pills-costs" type="button" role="tab" aria-controls="v-pills-costs" aria-selected="false">
+                            <i class="bi bi-cash-coin me-2"></i> Cost Management
+                        </button>
+                        <button class="nav-link mb-2" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">
+                            <i class="bi bi-gear me-2"></i> Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <!-- Overview Tab -->
+                    <div class="tab-pane fade show active" id="v-pills-overview" role="tabpanel" aria-labelledby="v-pills-overview-tab">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="stat-card text-center">
+                                    <div class="stat-icon">
+                                        <i class="bi bi-image"></i>
+                                    </div>
+                                    <div class="stat-value">1,248</div>
+                                    <div class="stat-label">TOTAL IMAGES GENERATED</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-card text-center">
+                                    <div class="stat-icon">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+                                    <div class="stat-value">42</div>
+                                    <div class="stat-label">ACTIVE USERS</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-card text-center">
+                                    <div class="stat-icon">
+                                        <i class="bi bi-cash"></i>
+                                    </div>
+                                    <div class="stat-value">$156.20</div>
+                                    <div class="stat-label">MONTHLY COST</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card mt-4">
+                            <h5 class="mb-4">Daily Generation Activity</h5>
+                            <div class="chart-container">
+                                <canvas id="activityChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card mt-4">
+                            <h5 class="mb-4">Model Usage Distribution</h5>
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <div class="chart-container">
+                                        <canvas id="modelChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>GPT Image</span>
+                                            <span>65%</span>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>DALL·E 3</span>
+                                            <span>25%</span>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>DALL·E 2</span>
+                                            <span>10%</span>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Users Tab -->
+                    <div class="tab-pane fade" id="v-pills-users" role="tabpanel" aria-labelledby="v-pills-users-tab">
+                        <div class="dashboard-card">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="mb-0">User Management</h5>
+                                <button class="btn btn-primary btn-sm">
+                                    <i class="bi bi-plus"></i> Add User
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
+                                            <th>Images</th>
+                                            <th>Last Active</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Lisa D.</td>
+                                            <td>lisa@example.com</td>
+                                            <td><span class="badge bg-primary">Designer</span></td>
+                                            <td>452</td>
+                                            <td>Today</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-secondary">View</button>
+                                                <button class="btn btn-sm btn-outline-danger ms-1">Limit</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Somchai P.</td>
+                                            <td>somchai@example.com</td>
+                                            <td><span class="badge bg-success">Marketing</span></td>
+                                            <td>286</td>
+                                            <td>Yesterday</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-secondary">View</button>
+                                                <button class="btn btn-sm btn-outline-danger ms-1">Limit</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Arthit S.</td>
+                                            <td>arthit@example.com</td>
+                                            <td><span class="badge bg-info">Developer</span></td>
+                                            <td>510</td>
+                                            <td>2 days ago</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-secondary">View</button>
+                                                <button class="btn btn-sm btn-outline-danger ms-1">Limit</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Usage Analytics Tab -->
+                    <div class="tab-pane fade" id="v-pills-usage" role="tabpanel" aria-labelledby="v-pills-usage-tab">
+                        <div class="dashboard-card">
+                            <h5 class="mb-4">Request Volume</h5>
+                            <div class="chart-container">
+                                <canvas id="requestChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card mt-4">
+                            <h5 class="mb-4">Top Prompt Keywords</h5>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="chart-container">
+                                        <canvas id="keywordChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Most Used Keywords
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                landscape
+                                                <span class="badge bg-primary rounded-pill">124</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                sunset
+                                                <span class="badge bg-primary rounded-pill">98</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                mountain
+                                                <span class="badge bg-primary rounded-pill">76</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                futuristic
+                                                <span class="badge bg-primary rounded-pill">65</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                cityscape
+                                                <span class="badge bg-primary rounded-pill">52</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cost Management Tab -->
+                    <div class="tab-pane fade" id="v-pills-costs" role="tabpanel" aria-labelledby="v-pills-costs-tab">
+                        <div class="dashboard-card">
+                            <h5 class="mb-4">Cost Breakdown</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="chart-container">
+                                        <canvas id="costChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Monthly Cost by Model
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                GPT Image
+                                                <span class="badge bg-primary rounded-pill">$98.50</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                DALL·E 3
+                                                <span class="badge bg-primary rounded-pill">$42.75</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                DALL·E 2
+                                                <span class="badge bg-primary rounded-pill">$14.95</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="card mt-3">
+                                        <div class="card-header">
+                                            Budget Status
+                                        </div>
+                                        <div class="card-body">
+                                            <h6 class="card-title">Monthly Budget: $200.00</h6>
+                                            <p class="card-text">Used: $156.20 (78.1%)</p>
+                                            <div class="progress mb-3">
+                                                <div class="progress-bar" role="progressbar" style="width: 78.1%" aria-valuenow="78.1" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <p class="card-text text-muted">Budget resets in 8 days</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card mt-4">
+                            <h5 class="mb-4">Top Spenders</h5>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Department</th>
+                                            <th>Images</th>
+                                            <th>Avg. Quality</th>
+                                            <th>Cost</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Lisa D.</td>
+                                            <td>Design</td>
+                                            <td>452</td>
+                                            <td>HD</td>
+                                            <td>$64.80</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-danger">Set Limit</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Arthit S.</td>
+                                            <td>Engineering</td>
+                                            <td>510</td>
+                                            <td>Standard</td>
+                                            <td>$51.20</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-danger">Set Limit</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Somchai P.</td>
+                                            <td>Marketing</td>
+                                            <td>286</td>
+                                            <td>HD</td>
+                                            <td>$40.20</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-danger">Set Limit</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Settings Tab -->
+                    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+                        <div class="dashboard-card">
+                            <h5 class="mb-4">Application Settings</h5>
+                            <form>
+                                <div class="mb-3">
+                                    <label for="appName" class="form-label">Application Name</label>
+                                    <input type="text" class="form-control" id="appName" value="ArtGen FastAPI Service">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="environment" class="form-label">Environment</label>
+                                    <select class="form-select" id="environment">
+                                        <option value="development">Development</option>
+                                        <option value="testing">Testing</option>
+                                        <option value="production">Production</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="logLevel" class="form-label">Log Level</label>
+                                    <select class="form-select" id="logLevel">
+                                        <option value="DEBUG">DEBUG</option>
+                                        <option value="INFO" selected>INFO</option>
+                                        <option value="WARNING">WARNING</option>
+                                        <option value="ERROR">ERROR</option>
+                                        <option value="CRITICAL">CRITICAL</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="debugMode" checked>
+                                    <label class="form-check-label" for="debugMode">Debug Mode</label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Settings</button>
+                            </form>
+                        </div>
+                        
+                        <div class="dashboard-card mt-4">
+                            <h5 class="mb-4">API Configuration</h5>
+                            <form>
+                                <div class="mb-3">
+                                    <label for="openaiKey" class="form-label">OpenAI API Key</label>
+                                    <input type="password" class="form-control" id="openaiKey" value="sk-•••••••••••••••••••••••••••••••••••••••••••">
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="authEnabled">
+                                    <label class="form-check-label" for="authEnabled">Enable Authentication</label>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="secretKey" class="form-label">Secret Key</label>
+                                    <input type="password" class="form-control" id="secretKey" value="••••••••••••••••••••••••••••••••">
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="rateLimitEnabled" checked>
+                                    <label class="form-check-label" for="rateLimitEnabled">Enable Rate Limiting</label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="rateLimitRequests" class="form-label">Rate Limit Requests</label>
+                                            <input type="number" class="form-control" id="rateLimitRequests" value="20">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="rateLimitPeriod" class="form-label">Rate Limit Period (seconds)</label>
+                                            <input type="number" class="form-control" id="rateLimitPeriod" value="3600">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save API Settings</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Activity Chart
+            const activityCtx = document.getElementById('activityChart').getContext('2d');
+            const activityChart = new Chart(activityCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Images Generated',
+                        data: [65, 102, 87, 91, 148, 72, 53],
+                        borderColor: '#3b71ca',
+                        backgroundColor: 'rgba(59, 113, 202, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Model Usage Chart
+            const modelCtx = document.getElementById('modelChart').getContext('2d');
+            const modelChart = new Chart(modelCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['GPT Image', 'DALL·E 3', 'DALL·E 2'],
+                    datasets: [{
+                        data: [65, 25, 10],
+                        backgroundColor: [
+                            '#3b71ca',
+                            '#14a44d',
+                            '#e4a11b'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%'
+                }
+            });
+            
+            // Request Chart
+            const requestCtx = document.getElementById('requestChart').getContext('2d');
+            const requestChart = new Chart(requestCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Requests',
+                        data: [156, 214, 278, 325, 410, 482],
+                        backgroundColor: '#3b71ca'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            
+            // Keyword Chart
+            const keywordCtx = document.getElementById('keywordChart').getContext('2d');
+            const keywordChart = new Chart(keywordCtx, {
+                type: 'polarArea',
+                data: {
+                    labels: ['landscape', 'sunset', 'mountain', 'futuristic', 'cityscape'],
+                    datasets: [{
+                        data: [124, 98, 76, 65, 52],
+                        backgroundColor: [
+                            'rgba(59, 113, 202, 0.7)',
+                            'rgba(20, 164, 77, 0.7)',
+                            'rgba(228, 161, 27, 0.7)',
+                            'rgba(197, 50, 50, 0.7)',
+                            'rgba(156, 39, 176, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            
+            // Cost Chart
+            const costCtx = document.getElementById('costChart').getContext('2d');
+            const costChart = new Chart(costCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['GPT Image', 'DALL·E 3', 'DALL·E 2'],
+                    datasets: [{
+                        data: [98.50, 42.75, 14.95],
+                        backgroundColor: [
+                            '#3b71ca',
+                            '#14a44d',
+                            '#e4a11b'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

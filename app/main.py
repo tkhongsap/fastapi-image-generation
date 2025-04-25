@@ -52,6 +52,19 @@ app.include_router(api_router, prefix="/api")
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+# Admin dashboard
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_dashboard(request: Request):
+    # In a real app, check for admin authorization here
+    return templates.TemplateResponse("dashboard.html", {"request": request})
+
+# API documentation
+@app.get("/docs/api", response_class=HTMLResponse)
+async def api_docs(request: Request):
+    with open("app/static/docs/api.md", "r") as f:
+        api_md_content = f.read()
+    return templates.TemplateResponse("api_docs.html", {"request": request, "api_content": api_md_content})
+
 # Health check endpoint
 @app.get("/health")
 async def health_check():

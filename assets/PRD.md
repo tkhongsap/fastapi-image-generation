@@ -34,14 +34,19 @@ The service will let internal or external users:
 * **Marketing PM (Somchai)** – reviews images and exports for slide decks.  
 * **Backend Engineer (Arthit)** – integrates service into a larger content pipeline.
 
-### 3.2 Key Stories
-| ID | As a… | I want… | So that… |
-|----|-------|---------|----------|
-| US-01 | Designer | to pick GPT Image and enter a prompt | I can get a high-quality mockup |
-| US-02 | Designer | to switch to DALL·E 2 for cheaper batch runs | I stay within budget |
-| US-03 | PM | to download the PNG with transparency | I can layer it in PowerPoint |
-| US-04 | Engineer | to call `/generate` programmatically | I can automate newsletter thumbnails |
-| US-05 | Admin | to see request logs + cost | I can audit usage per project |
+### 3.2 Key User Stories - *Generation-only scope*  
+
+| ID | As a … | I want … | So that … |
+|----|---------|----------|-----------|
+| **US-01** | **Graphic Designer** | to select **GPT Image** and enter a detailed prompt describing the look I need | I can instantly get a high-quality hero image or poster concept |
+| **US-02** | **Graphic Designer** | to adjust size (square, portrait, landscape) and quality before I hit “Generate” | the output fits my exact layout without extra cropping |
+| **US-03** | **Marketer** | to choose **DALL·E 2** and request up to 10 variations in one click | I can explore multiple creative directions while keeping costs low |
+| **US-04** | **Marketer** | to preview every generated image in a scrollable gallery and pick the best | I can decide quickly which visual aligns with the campaign |
+| **US-05** | **PM / Content Editor** | to download the chosen image as PNG with optional transparent background | I can drop it straight into PowerPoint, Figma, or social templates |
+| **US-06** | **Backend Engineer** | to call `/generate` programmatically with model, prompt, and output parameters | I can automate artwork production for newsletters and blogs |
+| **US-07** | **Admin / Finance** | to view per-user request counts and token spend in a dashboard | I can monitor usage, flag abuse, and keep the monthly bill predictable |
+
+**Scope note:** All stories focus on **new image creation**. There is **no user-supplied image upload or in-painting flow** in this MVP.
 
 ---
 
