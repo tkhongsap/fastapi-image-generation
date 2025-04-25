@@ -1,0 +1,36 @@
+2025-04-25 09:50:20,689 - httpx - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-04-25 09:50:20,693 - httpx - DEBUG - load_verify_locations cafile='C:\\Users\\i1032745\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\certifi\\cacert.pem'
+2025-04-25 09:50:21,058 - httpx - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-04-25 09:50:21,059 - httpx - DEBUG - load_verify_locations cafile='C:\\Users\\i1032745\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\certifi\\cacert.pem'
+2025-04-25 09:50:21,436 - app.services.openai_service - INFO - OpenAI service initialized with API key: set
+2025-04-25 09:50:21,437 - app.services.openai_service - INFO - Generating image with prompt: 'A black cat in , dancing in a simple drawing style...' using model: ImageModel.GPT_IMAGE_1
+2025-04-25 09:50:21,687 - openai._base_client - DEBUG - Request options: {'method': 'post', 'url': '/images/generations', 'files': None, 'json_data': {'prompt': 'A black cat in , dancing in a simple drawing style on a white background. Digital art in the style of Greg Rutkowski and Atey Ghailan.', 'model': 'gpt-image-1', 'n': 1, 'quality': 'standard', 'response_format': 'png', 'size': '1024x1024'}}
+2025-04-25 09:50:21,689 - httpcore.connection - DEBUG - connect_tcp.started host='api.openai.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-04-25 09:50:21,810 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000002100A1429C0>
+2025-04-25 09:50:21,811 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000002100A13D650> server_hostname='api.openai.com' timeout=5.0
+2025-04-25 09:50:21,847 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000002100A0B2BA0>
+2025-04-25 09:50:21,847 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-04-25 09:50:21,849 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-04-25 09:50:21,849 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-04-25 09:50:21,850 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-04-25 09:50:21,850 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-04-25 09:50:22,113 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 401, b'Unauthorized', [(b'Date', b'Fri, 25 Apr 2025 02:50:36 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'253'), (b'Connection', b'keep-alive'), (b'www-authenticate', b'Bearer realm="OpenAI API"'), (b'openai-version', b'2020-10-01'), (b'x-request-id', b'req_7cd744c63f588164c4bad3c475d51fde'), (b'openai-processing-ms', b'23'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'cf-cache-status', b'DYNAMIC'), (b'Set-Cookie', b'__cf_bm=s7b9NQY1B5GcpBl5d2EWx0orBTF3PknVp_Am9cWP0ic-1745549436-1.0.1.1-TiLgfIOm9lEGXT6qGkkIsEf7gDBovoCDT9zRqSK9xseUvHuSPiW.t2TGquvDCskay23yvnlKAKUy97nWYnIpk56vylrSM_3YOjblLSZhONw; path=/; expires=Fri, 25-Apr-25 03:20:36 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), (b'X-Content-Type-Options', b'nosniff'), (b'Set-Cookie', b'_cfuvid=CmLlZLDB6fq.Mvc.G3k4nVEvty99OsSmQ5ho66Px0Xs-1745549436919-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), (b'Server', b'cloudflare'), (b'CF-RAY', b'935a88ab2f7ca1c2-BKK'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-04-25 09:50:22,114 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/images/generations "HTTP/1.1 401 Unauthorized"
+2025-04-25 09:50:22,115 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-04-25 09:50:22,115 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-04-25 09:50:22,115 - httpcore.http11 - DEBUG - response_closed.started
+2025-04-25 09:50:22,117 - httpcore.http11 - DEBUG - response_closed.complete
+2025-04-25 09:50:22,117 - openai._base_client - DEBUG - HTTP Request: POST https://api.openai.com/v1/images/generations "401 Unauthorized"
+2025-04-25 09:50:22,117 - openai._base_client - DEBUG - Encountered httpx.HTTPStatusError
+Traceback (most recent call last):
+  File "C:\Users\i1032745\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1612, in _request
+    response.raise_for_status()
+  File "C:\Users\i1032745\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\httpx\_models.py", line 761, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Client error '401 Unauthorized' for url 'https://api.openai.com/v1/images/generations'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+2025-04-25 09:50:22,129 - openai._base_client - DEBUG - Not retrying
+2025-04-25 09:50:22,129 - openai._base_client - DEBUG - Re-raising status error
+2025-04-25 09:50:22,129 - app.services.openai_service - ERROR - Unexpected error: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your_ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-04-25 09:50:22,129 - app.services.openai_service - ERROR - Error generating image: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your_ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-04-25 09:50:22,130 - app.api.v1.image_generation - ERROR - Error generating image: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your_ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}

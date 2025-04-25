@@ -28,6 +28,9 @@ class LogLevel(str, Enum):
     WARNING = "WARNING"
     ERROR = "ERROR"
     CRITICAL = "CRITICAL"
+    
+    def __str__(self):
+        return self.value
 
 # OpenAI Image Models
 class ImageModel(str, Enum):
