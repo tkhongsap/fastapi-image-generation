@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/static/css/normalize.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="/static/js/app.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>ArtGen</h1>
+            <p>Image Generation with OpenAI</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="app-layout">
+            <!-- Control Panel (Left Side) -->
+            <section class="control-panel">
+                <div class="form-group">
+                    <label for="prompt">Prompt</label>
+                    <textarea id="prompt" rows="5" placeholder="Describe the image you want to generate...">A castle on a cliff at dawn with dramatic lighting</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="model">Model</label>
+                    <select id="model">
+                        <option value="gpt-image-1" selected>GPT Image</option>
+                        <option value="dall-e-3">DALL·E 3</option>
+                        <option value="dall-e-2">DALL·E 2</option>
+                    </select>
+                </div>
+                
+                <details class="advanced-options">
+                    <summary>Advanced Options</summary>
+                    <div class="form-group">
+                        <label for="size">Size</label>
+                        <select id="size">
+                            <option value="1024x1024" selected>Square (1024×1024)</option>
+                            <option value="1792x1024">Landscape (1792×1024)</option>
+                            <option value="1024x1792">Portrait (1024×1792)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quality">Quality</label>
+                        <select id="quality">
+                            <option value="medium" selected>Medium</option>
+                            <option value="standard">Standard</option>
+                            <option value="hd">HD (DALL·E 3 only)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="count">Number of Images</label>
+                        <input type="number" id="count" min="1" max="10" value="1">
+                    </div>
+                </details>
+                
+                <button id="generate-btn" class="btn btn-primary">Generate Image</button>
+            </section>
+            
+            <!-- Results Panel (Right Side) -->
+            <section class="results-panel">
+                <div class="results-header">
+                    <h2>Generated Images</h2>
+                    <p id="status">Ready to generate</p>
+                </div>
+                
+                <div id="loading" class="hidden">
+                    <div class="spinner"></div>
+                    <p>Generating your images...</p>
+                </div>
+                
+                <div id="gallery" class="image-gallery"></div>
+                
+                <template id="image-template">
+                    <div class="image-container">
+                        <img src="" alt="Generated image">
+                        <div class="image-actions">
+                            <button class="btn btn-small btn-icon download-btn" title="Download Image">
+                                <span class="icon">⬇️</span> Download
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </section>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 ArtGen FastAPI Service</p>
+        </div>
+    </footer>
+    
+    <!-- Toast notification system -->
+    <div id="toast-container"></div>
+</body>
+</html> 

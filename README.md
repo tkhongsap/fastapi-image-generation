@@ -1,22 +1,21 @@
 # ArtGen FastAPI Service
 
-A lightweight service that exposes OpenAI's Image API through a FastAPI backend and a minimalist web frontend.
+A web application that generates images using OpenAI's GPT Image and DALL-E models through a FastAPI backend and a clean, modern web interface.
 
 ## Features
 
 - Generate images using OpenAI's image models (GPT Image, DALL·E 3, DALL·E 2)
-- Edit existing images with prompts and masks
-- Create variations of images
-- Configure image size, quality, format, and other parameters
-- Simple and intuitive web interface
+- Configure image size, quality, and format
+- Modern, responsive web UI
 - RESTful API for programmatic access
+- Automatic fallback to DALL-E 3 if GPT Image is not available
 
 ## Setup
 
 ### Prerequisites
 
 - Python 3.9+
-- OpenAI API key
+- OpenAI API key with access to GPT Image model
 
 ### Installation
 
@@ -42,25 +41,17 @@ A lightweight service that exposes OpenAI's Image API through a FastAPI backend 
    pip install -r requirements.txt
    ```
 
-4. Create a `.env` file in the project root directory based on `env.example`:
+4. Create a `.env` file in the project root directory with your OpenAI API key:
    ```
-   # OpenAI API configuration
-   OPENAI_API_KEY=your_openai_api_key_here
+   # OpenAI API Configuration
+   OPENAI_API_KEY=sk-your-openai-api-key-here
+   OPENAI_ORG_ID=org-your-org-id-here-if-applicable
 
-   # Application settings
-   APP_NAME=ArtGen FastAPI Service
-   ENV=development  # Options: development, testing, production
-   DEBUG=true
-   LOG_LEVEL=DEBUG  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+   # API Security Configuration (optional)
+   # API_KEY=your-api-key-for-production
 
-   # Security settings
-   AUTH_ENABLED=false
-   SECRET_KEY=your_secure_random_secret_key_here
-
-   # Rate limiting
-   RATE_LIMIT_ENABLED=true
-   RATE_LIMIT_REQUESTS=20  # Number of requests allowed
-   RATE_LIMIT_PERIOD=3600  # Period in seconds (1 hour)
+   # Application Configuration
+   DEBUG=True
    ```
 
 ### Running the Application
@@ -73,46 +64,27 @@ python run.py
 
 The application will be available at http://localhost:8000.
 
+For development mode with auto-reload:
+
+```bash
+python run.py --reload --debug
+```
+
 ## API Usage
 
 ### Generate Image
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/generate" \
+curl -X POST "http://localhost:8000/api/generate" \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": "A beautiful mountain landscape at sunset",
     "model": "gpt-image-1",
     "n": 1,
     "size": "1024x1024",
-    "quality": "standard",
-    "format": "png",
-    "background": "auto"
+    "quality": "medium",
+    "format": "png"
   }'
-```
-
-### Edit Image
-
-```bash
-curl -X POST "http://localhost:8000/api/v1/edit" \
-  -F "prompt=Add a castle on the mountain" \
-  -F "image=@path/to/image.png" \
-  -F "mask=@path/to/mask.png" \
-  -F "model=dall-e-2" \
-  -F "n=1" \
-  -F "size=1024x1024" \
-  -F "format=png"
-```
-
-### Create Variation
-
-```bash
-curl -X POST "http://localhost:8000/api/v1/variation" \
-  -F "image=@path/to/image.png" \
-  -F "model=dall-e-2" \
-  -F "n=1" \
-  -F "size=1024x1024" \
-  -F "format=png"
 ```
 
 ## Web Interface
@@ -120,10 +92,9 @@ curl -X POST "http://localhost:8000/api/v1/variation" \
 The web interface is accessible at http://localhost:8000/. It provides a user-friendly way to:
 
 1. Enter prompts and generate images
-2. Upload and edit existing images
-3. Create variations of images
-4. Configure all image generation parameters
-5. Download or copy the generated images
+2. Select models, size, and quality
+3. Generate multiple images at once
+4. Download the generated images
 
 ## Project Structure
 
@@ -132,26 +103,38 @@ fastapi-image-generation/
 ├── app/
 │   ├── api/
 │   │   ├── v1/
-│   │   │   ├── image_generation.py
-│   │   ├── routes.py
+│   │   │   ├── endpoints/
+│   │   │   │   ├── generate.py
+│   │   │   ├── api.py
+│   │   ├── deps.py
 │   ├── core/
 │   │   ├── config.py
 │   ├── schemas/
 │   │   ├── image.py
 │   ├── services/
-│   │   ├── openai_service.py
+│   │   ├── image_service.py
 │   ├── static/
+│   │   ├── css/
+│   │   │   ├── normalize.css
+│   │   │   ├── styles.css
+│   │   ├── js/
+│   │   │   ├── app.js
 │   ├── templates/
 │   │   ├── index.html
+│   ├── utils/
+│   │   ├── openai_client.py
 │   ├── main.py
-├── logs/
 ├── .env
-├── env.example
 ├── requirements.txt
 ├── run.py
 ├── README.md
 └── TASKS.md
 ```
+
+## Notes
+
+- The application includes automatic fallback mechanisms if the GPT Image model is not available, using DALL-E 3 as an alternative.
+- In development mode, API key authentication is disabled for easier testing.
 
 ## License
 
