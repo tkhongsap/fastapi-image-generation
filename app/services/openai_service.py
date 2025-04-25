@@ -21,31 +21,9 @@ class OpenAIService:
     def __init__(self):
         """Initialize the OpenAI client with API key from settings."""
         # Initialize the OpenAI clients
-        self.api_key = self._clean_api_key(settings.OPENAI_API_KEY)
+        self.api_key = settings.OPENAI_API_KEY
         self.initialized = False
         self.init_clients()
-        
-    def _clean_api_key(self, api_key: str) -> str:
-        """
-        Clean the API key by removing any whitespace, newlines or extra characters.
-        
-        Args:
-            api_key: The raw API key possibly containing whitespace
-            
-        Returns:
-            Cleaned API key
-        """
-        if not api_key:
-            return ""
-        
-        # Remove all whitespace, newlines, and carriage returns
-        cleaned_key = re.sub(r'\s+', '', api_key)
-        
-        # Check if key appears truncated or malformed
-        if len(cleaned_key) < 20:  # Most API keys are longer than this
-            logger.warning("API key appears to be too short after cleaning. Check your .env file format.")
-        
-        return cleaned_key
         
     def init_clients(self):
         """Initialize OpenAI clients with proper error handling"""
