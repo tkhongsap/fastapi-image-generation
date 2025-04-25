@@ -10,6 +10,7 @@ import logging
 from typing import Optional, Tuple
 from pathlib import Path
 from openai import OpenAI, OpenAIError, APIStatusError, APIConnectionError, AuthenticationError
+from app.core.config import settings
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -35,15 +36,15 @@ def initialize_openai_client() -> Tuple[Optional[OpenAI], str, bool]:
     """
     global client, active_image_model, using_fallback_mode
     
-    API_KEY = os.getenv("OPENAI_API_KEY")
+    API_KEY = settings.OPENAI_API_KEY
     ORG_ID = os.getenv("OPENAI_ORG_ID")
 
     if not API_KEY:
-        logger.error("❌ OPENAI_API_KEY environment variable is not set. Falling back.")
+        logger.error("❌ OPENAI_API_KEY is not set or empty. Falling back.")
         using_fallback_mode = True
         return None, active_image_model, True
 
-    key_preview = f"{API_KEY[:7]}...{API_KEY[-4:]}"
+    key_preview = f"{API_KEY[:7]}...{API_KEY[-4:]}" if len(API_KEY) > 11 else "***masked***"
     is_project_based_key = API_KEY.startswith("sk-proj-")
     logger.info(f"OpenAI API key detected: {key_preview} ({'project-based' if is_project_based_key else 'standard'})")
 
