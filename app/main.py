@@ -14,6 +14,7 @@ from fastapi.templating import Jinja2Templates
 from app.api.v1.api import api_router
 from app.core.config import settings
 from app.utils.openai_client import initialize_openai_client
+from app.utils.openai_utils import cleanup_client
 
 # Load environment variables from .env at the very top
 try:
@@ -103,5 +104,4 @@ async def startup_event():
 async def shutdown_event():
     """Application shutdown: perform cleanup"""
     logger.info(f"Shutting down {settings.PROJECT_NAME}")
-    from app.utils.openai_client import cleanup_client
     cleanup_client() 

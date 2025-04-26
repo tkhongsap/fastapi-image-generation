@@ -10,12 +10,13 @@ import logging
 import base64
 from typing import Dict, List, Optional, Any, Union
 
-from app.utils.openai_client import (
+from app.utils.openai_utils import (
     get_client, 
     get_active_model, 
     reinitialize_client_if_needed,
-    initialize_openai_client
+    cleanup_client
 )
+from app.utils.openai_client import initialize_openai_client
 from app.schemas.image import (
     ImageGenerationRequest, 
     ImageGenerationResponse,
