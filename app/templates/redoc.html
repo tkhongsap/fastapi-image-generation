@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="https://fastapi.tiangolo.com/img/favicon.png">
+    <link rel="stylesheet" href="/static/css/redoc-theme.css">
     <style>
         :root {
             --accent-color: #9f6eff;
@@ -27,113 +28,19 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        /* ReDoc Container */
-        redoc {
-            display: block;
-        }
-        
-        /* Override ReDoc core styles - must use !important */
-        :root .redoc-wrap {
-            background-color: var(--bg-color) !important;
-        }
-        
-        :root .menu-content {
-            background-color: var(--card-bg) !important;
-            border-right: 1px solid var(--border-color) !important;
-        }
-        
-        :root .menu-content label {
-            color: var(--text-primary) !important;
-        }
-        
-        :root .menu-content a {
-            color: var(--text-secondary) !important;
-        }
-        
-        :root .menu-content a:hover {
-            color: var(--text-primary) !important;
-        }
-        
-        /* Active menu item */
-        :root .menu-content li[data-item-id] label.active {
-            background-color: rgba(159, 110, 255, 0.1) !important;
-            color: var(--accent-color) !important;
-        }
-        
-        /* API Info section */
-        :root .api-info h1 {
-            color: var(--text-primary) !important;
-            font-weight: 700 !important;
-            font-size: 32px !important;
-        }
-        
-        :root .api-info p {
-            color: var(--text-secondary) !important;
-        }
-        
-        /* API endpoints */
-        :root [data-section-id] {
-            background-color: var(--card-bg) !important;
-            color: var(--text-primary) !important;
-            border-radius: 8px !important;
-            margin-bottom: 12px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-            overflow: hidden !important;
-        }
-        
-        /* Operation method labels */
-        :root [data-section-id] .operation-type {
-            border-radius: 4px !important;
-            font-weight: 600 !important;
-        }
-        
-        /* Endpoint path */
-        :root .operation-path {
-            color: var(--text-primary) !important;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace !important;
-        }
-        
-        /* Parameters section */
-        :root .params-wrap {
-            background-color: var(--card-bg) !important;
-            border: 1px solid var(--border-color) !important;
-            border-radius: 8px !important;
-        }
-        
-        /* Parameter row */
-        :root .param-name {
-            color: var(--accent-color) !important;
-            font-weight: 600 !important;
-        }
-        
-        /* Code samples */
-        :root .react-tabs__tab-panel, :root .tab-content {
-            background-color: rgba(0, 0, 0, 0.3) !important;
-            border-radius: 4px !important;
-        }
-        
-        :root pre {
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace !important;
-            font-size: 13px !important;
-        }
-        
-        /* Schema section */
-        :root .schema {
-            color: var(--text-primary) !important;
-            background-color: var(--card-bg) !important;
-            border-radius: 4px !important;
-        }
-        
         /* Loading animation */
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-color);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
+            justify-content: center;
+            z-index: 9999;
         }
         
         .spinner {
@@ -148,112 +55,79 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        /* Direct styling for ReDoc elements */
+        redoc::part(section-title) {
+            color: var(--text-primary) !important;
+        }
+        
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-light);
+        }
     </style>
-    <link rel="stylesheet" href="/static/css/redoc-theme.css">
 </head>
 <body>
-    <div class="loading" id="loading">
+    <div id="loading">
         <div class="spinner"></div>
-        <div>Loading API Documentation...</div>
+        <div style="margin-top: 16px; color: var(--text-primary);">Loading API Documentation...</div>
     </div>
     
-    <noscript>
-        ReDoc requires Javascript to function. Please enable it to browse the documentation.
-    </noscript>
-    
+    <!-- Simple ReDoc implementation that doesn't rely on JS initialization -->
     <redoc spec-url="{{ openapi_url }}"></redoc>
     
     <script src="{{ redoc_js_url }}"></script>
     <script>
-        // Handle loading state
+        // Simple loading management
         const loadingElement = document.getElementById('loading');
         
-        // Add a timeout to hide the loading indicator if it takes too long
-        const loadingTimeout = setTimeout(() => {
-            if (loadingElement.style.display !== 'none') {
-                loadingElement.style.display = 'none';
-                console.info('Loading timeout reached, hiding loading indicator');
+        // Hide loading after 3 seconds regardless of state
+        setTimeout(() => {
+            if (loadingElement) {
+                loadingElement.style.opacity = '0';
+                loadingElement.style.transition = 'opacity 0.5s';
+                setTimeout(() => {
+                    loadingElement.style.display = 'none';
+                }, 500);
             }
-        }, 5000); // 5 second timeout
+        }, 3000);
         
-        // Listen for the DOM to be fully loaded
+        // Listen for ReDoc initialization completion
         document.addEventListener('DOMContentLoaded', function() {
-            try {
-                // Simplified initialization approach
-                const options = {
-                    scrollYOffset: 0,
-                    hideDownloadButton: false,
-                    expandResponses: '200,201',
-                    theme: {
-                        colors: {
-                            primary: { main: '#9f6eff' },
-                            text: {
-                                primary: '#ffffff',
-                                secondary: 'rgba(255, 255, 255, 0.7)'
-                            },
-                            http: {
-                                get: '#22c55e',
-                                post: '#3b82f6',
-                                put: '#f59e0b',
-                                delete: '#ef4444'
-                            }
-                        },
-                        typography: {
-                            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-                            fontSize: '16px',
-                            headings: { fontWeight: '600' },
-                            code: { fontFamily: "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace" }
-                        },
-                        sidebar: {
-                            backgroundColor: '#1a1a24',
-                            textColor: '#ffffff',
-                            activeTextColor: '#9f6eff'
-                        }
+            // This is a more aggressive approach to force hiding the loader
+            const checkIfLoaded = setInterval(() => {
+                // Look for ReDoc content that indicates it's loaded
+                const redocContent = document.querySelector('redoc [data-section-id]');
+                if (redocContent) {
+                    // Hide loader immediately when content is found
+                    if (loadingElement) {
+                        loadingElement.style.display = 'none';
                     }
-                };
-                
-                // Initialize ReDoc with the OpenAPI spec URL
-                Redoc.init('{{ openapi_url }}', options)
-                    .then(() => {
-                        // Success! Hide the loading indicator
-                        loadingElement.style.display = 'none';
-                        clearTimeout(loadingTimeout);
-                        
-                        // Force redoc to recalculate heights correctly
-                        setTimeout(() => {
-                            window.dispatchEvent(new Event('resize'));
-                        }, 300);
-                    })
-                    .catch(error => {
-                        console.error('ReDoc initialization error:', error);
-                        loadingElement.style.display = 'none';
-                        clearTimeout(loadingTimeout);
-                        
-                        // Show a simple error message
-                        document.querySelector('redoc').innerHTML = `
-                            <div style="padding: 2rem; text-align: center;">
-                                <h2 style="color: var(--text-primary);">Error Loading API Documentation</h2>
-                                <p style="color: var(--text-secondary);">
-                                    There was a problem loading the API documentation.
-                                    Please try refreshing the page.
-                                </p>
-                                <button onclick="location.reload()" style="
-                                    background: var(--accent-color);
-                                    color: white;
-                                    border: none;
-                                    padding: 0.5rem 1rem;
-                                    border-radius: 4px;
-                                    cursor: pointer;
-                                    margin-top: 1rem;
-                                ">Refresh Page</button>
-                            </div>
-                        `;
-                    });
-            } catch (e) {
-                console.error('Error in ReDoc setup:', e);
-                loadingElement.style.display = 'none';
-                clearTimeout(loadingTimeout);
-            }
+                    clearInterval(checkIfLoaded);
+                    
+                    // Force a window resize to help ReDoc render correctly
+                    window.dispatchEvent(new Event('resize'));
+                }
+            }, 500); // Check every 500ms
+            
+            // Backup timeout to clean up interval if content isn't found
+            setTimeout(() => {
+                clearInterval(checkIfLoaded);
+            }, 10000);
         });
     </script>
 </body>
