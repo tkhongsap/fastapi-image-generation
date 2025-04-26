@@ -43,7 +43,7 @@ def initialize_openai_client() -> Tuple[Optional[OpenAI], str, bool]:
         using_fallback_mode = True
         return None, active_image_model, True
 
-    key_preview = f"{API_KEY[:7]}........{API_KEY[-4:]}" if len(API_KEY) > 11 else "***masked***"
+    key_preview = f"{API_KEY[:7]}........{API_KEY[-7:]}" if len(API_KEY) > 11 else "***masked***"
     is_project_based_key = API_KEY.startswith("sk-proj-")
     logger.info(f"OpenAI API key detected: {key_preview} ({'project-based' if is_project_based_key else 'standard'})")
 
@@ -54,18 +54,17 @@ def initialize_openai_client() -> Tuple[Optional[OpenAI], str, bool]:
             default_headers={"OpenAI-Beta": "assistants=v1"}
         )
 
-        # Test API key with a simple call
-        logger.info(f"Attempting to validate API key and check model: {IMAGE_MODEL}")
-        # For gpt-image-1, make a test image generation call
+        # Lightweight check: list available models and verify IMAGE_MODEL is present
+        logger.info("Validating OpenAI API key and model access with models.list()...")
         try:
-            _ = client.images.generate(
-                model=IMAGE_MODEL,
-                prompt="test",
-                n=1,
-                size="1024x1024"
-            )
+            models = client.models.list()
+            available_models = [m.id for m in models.data]
+            if IMAGE_MODEL not in available_models:
+                logger.error(f"❌ Model {IMAGE_MODEL} is not available for this API key.")
+                using_fallback_mode = True
+                return None, active_image_model, True
         except Exception as test_exc:
-            logger.error(f"❌ Failed to validate gpt-image-1 via image generation endpoint: {test_exc}")
+            logger.error(f"❌ Failed to validate OpenAI API key or list models: {test_exc}")
             raise test_exc
         logger.info(f"✅ OpenAI API key validated successfully. Using image model: {IMAGE_MODEL}")
         active_image_model = IMAGE_MODEL
