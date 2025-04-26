@@ -43,7 +43,7 @@ def initialize_openai_client() -> Tuple[Optional[OpenAI], str, bool]:
         using_fallback_mode = True
         return None, active_image_model, True
 
-    key_preview = f"{API_KEY[:7]}...{API_KEY[-4:]}" if len(API_KEY) > 11 else "***masked***"
+    key_preview = f"{API_KEY[:7]}........{API_KEY[-4:]}" if len(API_KEY) > 11 else "***masked***"
     is_project_based_key = API_KEY.startswith("sk-proj-")
     logger.info(f"OpenAI API key detected: {key_preview} ({'project-based' if is_project_based_key else 'standard'})")
 
@@ -62,8 +62,7 @@ def initialize_openai_client() -> Tuple[Optional[OpenAI], str, bool]:
                 model=IMAGE_MODEL,
                 prompt="test",
                 n=1,
-                size="1024x1024",
-                response_format="b64_json"
+                size="1024x1024"
             )
         except Exception as test_exc:
             logger.error(f"❌ Failed to validate gpt-image-1 via image generation endpoint: {test_exc}")
