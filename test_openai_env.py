@@ -8,7 +8,7 @@ load_dotenv()
 
 api_key = os.getenv('OPENAI_API_KEY')
 if api_key:
-    print(f"OPENAI_API_KEY loaded: {api_key[:4]}...{api_key[-4:]}")
+    print(f"OPENAI_API_KEY loaded: {api_key[:10]}.......................{api_key[-10:]}")
 else:
     print("OPENAI_API_KEY not found in environment!")
 

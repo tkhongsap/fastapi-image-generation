@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 # Model selection
 IMAGE_MODEL = "gpt-image-1"
-FALLBACK_IMAGE_MODEL = "dall-e-3"  # Fallback if preferred is unavailable
 
 # Global client variable and state tracking
 client: Optional[OpenAI] = None
@@ -32,7 +31,7 @@ def initialize_openai_client() -> Tuple[Optional[OpenAI], str, bool]:
         Tuple containing:
         - OpenAI client (or None if initialization failed)
         - Active image model being used
-        - Boolean indicating if we're in fallback mode
+        - Boolean indicating if we're in fallback mode (always False now)
     """
     global client, active_image_model, using_fallback_mode
     
@@ -40,7 +39,7 @@ def initialize_openai_client() -> Tuple[Optional[OpenAI], str, bool]:
     ORG_ID = os.getenv("OPENAI_ORG_ID")
 
     if not API_KEY:
-        logger.error("❌ OPENAI_API_KEY is not set or empty. Falling back.")
+        logger.error("❌ OPENAI_API_KEY is not set or empty.")
         using_fallback_mode = True
         return None, active_image_model, True
 
@@ -57,8 +56,18 @@ def initialize_openai_client() -> Tuple[Optional[OpenAI], str, bool]:
 
         # Test API key with a simple call
         logger.info(f"Attempting to validate API key and check model: {IMAGE_MODEL}")
-        # Using a simple, low-cost call for validation
-        client.models.retrieve(IMAGE_MODEL) 
+        # For gpt-image-1, make a test image generation call
+        try:
+            _ = client.images.generate(
+                model=IMAGE_MODEL,
+                prompt="test",
+                n=1,
+                size="1024x1024",
+                response_format="b64_json"
+            )
+        except Exception as test_exc:
+            logger.error(f"❌ Failed to validate gpt-image-1 via image generation endpoint: {test_exc}")
+            raise test_exc
         logger.info(f"✅ OpenAI API key validated successfully. Using image model: {IMAGE_MODEL}")
         active_image_model = IMAGE_MODEL
         using_fallback_mode = False
@@ -72,22 +81,9 @@ def initialize_openai_client() -> Tuple[Optional[OpenAI], str, bool]:
         client = None
         using_fallback_mode = True
     except APIStatusError as e:
-        # Handle cases like model not found or other API errors during validation
         logger.error(f"❌ API ERROR during validation: Status {e.status_code}. Message: {e.message}")
-        if e.code == 'model_not_found':
-            logger.warning(f"Model '{IMAGE_MODEL}' not found or not accessible with this key. Trying fallback '{FALLBACK_IMAGE_MODEL}'.")
-            try:
-                client.models.retrieve(FALLBACK_IMAGE_MODEL)
-                logger.info(f"✅ Fallback model '{FALLBACK_IMAGE_MODEL}' validated. Using fallback.")
-                active_image_model = FALLBACK_IMAGE_MODEL
-                using_fallback_mode = False
-            except Exception as fallback_e:
-                logger.error(f"❌ Fallback model '{FALLBACK_IMAGE_MODEL}' also failed validation: {fallback_e}. Enabling fallback mode.")
-                client = None
-                using_fallback_mode = True
-        else:
-             client = None
-             using_fallback_mode = True  # Fallback for other API errors
+        client = None
+        using_fallback_mode = True
     except APIConnectionError as e:
         logger.error(f"❌ CONNECTION ERROR: Could not connect to OpenAI API. {e}")
         client = None

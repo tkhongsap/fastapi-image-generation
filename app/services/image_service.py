@@ -68,14 +68,12 @@ async def generate_image(request: ImageGenerationRequest) -> ImageGenerationResp
                 response_format="b64_json"
             )
         else:
-            # For GPT Image models, use the newer format
+            # For GPT Image models, use only required parameters
             result = client.images.generate(
                 model=request.model.value,
                 prompt=request.prompt,
                 n=request.n,
-                size=request.size.value,
-                quality=request.quality.value,
-                response_format="b64_json"
+                size=request.size.value
             )
         
         # Process results into our response format

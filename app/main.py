@@ -3,6 +3,8 @@ Main FastAPI application entry point
 """
 
 import logging
+import os
+from dotenv import load_dotenv, find_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,6 +14,17 @@ from fastapi.templating import Jinja2Templates
 from app.api.v1.api import api_router
 from app.core.config import settings
 from app.utils.openai_client import initialize_openai_client
+
+# Load environment variables from .env at the very top
+try:
+    dotenv_path = find_dotenv()
+    if dotenv_path:
+        load_dotenv(dotenv_path)
+        print(f"Loaded environment variables from {dotenv_path}")
+    else:
+        print("Warning: .env file not found. Environment variables may be missing.")
+except Exception as dotenv_exc:
+    print(f"Error loading .env file: {dotenv_exc}")
 
 # Configure logging
 logging.basicConfig(
