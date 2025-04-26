@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block additional_styles %}
+<style>
+    .api-container {
+        margin-top: 2rem;
+        color: #fff;
+    }
+    
+    .endpoint {
+        background-color: #1a1a24;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .endpoint h3 {
+        margin-top: 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .method {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+    
+    .method.post {
+        background-color: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+    
+    .path {
+        font-family: monospace;
+        font-size: 16px;
+    }
+    
+    .description {
+        margin: 1rem 0;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .param-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .param-table th, .param-table td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .param-table th {
+        color: rgba(255, 255, 255, 0.5);
+        font-weight: 500;
+        font-size: 14px;
+    }
+    
+    .param-required {
+        color: #f87171;
+    }
+    
+    .param-name {
+        color: #9f6eff;
+        font-family: monospace;
+    }
+    
+    .param-type {
+        color: #60a5fa;
+        font-family: monospace;
+        font-size: 14px;
+    }
+    
+    .api-summary {
+        background: linear-gradient(135deg, #1a1a24, #262636);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .api-summary h2 {
+        margin-top: 0;
+        background: linear-gradient(90deg, #eb5cff, #9f6eff 50%, #4bbdff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    
+    .openapi-link {
+        margin-top: 1rem;
+        display: block;
+    }
+    
+    .openapi-link a {
+        color: #9f6eff;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .openapi-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="api-container">
+        <div class="api-summary">
+            <h2>ArtGen FastAPI Service API</h2>
+            <p>A simple API for generating images using OpenAI models.</p>
+            <div class="openapi-link">
+                <a href="/openapi.json" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download OpenAPI Specification
+                </a>
+            </div>
+        </div>
+        
+        <h2>Endpoints</h2>
+        
+        <div class="endpoint">
+            <h3>
+                <span class="method post">POST</span>
+                <span class="path">/api/v1/generate/</span>
+            </h3>
+            <div class="description">
+                Generate an image based on the provided prompt and parameters.
+            </div>
+            
+            <h4>Parameters</h4>
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="param-name">prompt</td>
+                        <td class="param-type">string</td>
+                        <td class="param-required">Required</td>
+                        <td>The text prompt to generate an image from</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">model</td>
+                        <td class="param-type">string</td>
+                        <td>Optional</td>
+                        <td>The model to use for image generation (gpt-image-1, dall-e-3, dall-e-2)</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">n</td>
+                        <td class="param-type">integer</td>
+                        <td>Optional</td>
+                        <td>Number of images to generate (1-10)</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">size</td>
+                        <td class="param-type">string</td>
+                        <td>Optional</td>
+                        <td>The size of the generated image</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">quality</td>
+                        <td class="param-type">string</td>
+                        <td>Optional</td>
+                        <td>Quality of the generated image</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">format</td>
+                        <td class="param-type">string</td>
+                        <td>Optional</td>
+                        <td>Format to return the image in (png, jpeg)</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">background</td>
+                        <td class="param-type">string</td>
+                        <td>Optional</td>
+                        <td>Whether to make the background transparent</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h4>Response</h4>
+            <p>Returns a JSON object containing URLs to the generated images.</p>
+        </div>
+        
+        <div class="endpoint">
+            <h3>
+                <span class="method post">POST</span>
+                <span class="path">/api/v1/variants/</span>
+            </h3>
+            <div class="description">
+                Create variations of an existing image.
+            </div>
+            
+            <h4>Parameters</h4>
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="param-name">image</td>
+                        <td class="param-type">file</td>
+                        <td class="param-required">Required</td>
+                        <td>The image to create variations of</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">n</td>
+                        <td class="param-type">integer</td>
+                        <td>Optional</td>
+                        <td>Number of variations to generate (1-10)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h4>Response</h4>
+            <p>Returns a JSON object containing URLs to the generated image variations.</p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

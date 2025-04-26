@@ -109,14 +109,12 @@ async def swagger_ui(request: Request):
 # API Documentation with ReDoc
 @app.get("/api", include_in_schema=False)
 async def redoc_ui(request: Request):
-    """Serve custom ReDoc UI"""
+    """Serve simple API documentation instead of ReDoc"""
     return templates.TemplateResponse(
-        "api.html", 
+        "simple_api.html", 
         {
             "request": request, 
-            "title": f"API Reference | {settings.PROJECT_NAME}",
-            "active_doc": "redoc",
-            "doc_url": "/redoc"
+            "title": f"API Reference | {settings.PROJECT_NAME}"
         }
     )
 
@@ -137,6 +135,7 @@ async def swagger_ui_html(request: Request):
 @app.get("/redoc", include_in_schema=False)
 async def redoc_ui_html(request: Request):
     """Serve raw ReDoc HTML"""
+    # Simple implementation to avoid loading issues
     return templates.TemplateResponse(
         "redoc.html", 
         {
@@ -144,6 +143,18 @@ async def redoc_ui_html(request: Request):
             "title": f"{settings.PROJECT_NAME} - API Reference",
             "openapi_url": "/openapi.json",
             "redoc_js_url": "https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"
+        }
+    )
+
+# Simple API Documentation (no ReDoc)
+@app.get("/simple-api", include_in_schema=False)
+async def simple_api_docs(request: Request):
+    """Serve a simple, custom API documentation page without ReDoc"""
+    return templates.TemplateResponse(
+        "simple_api.html", 
+        {
+            "request": request,
+            "title": f"Simple API Reference | {settings.PROJECT_NAME}"
         }
     )
 

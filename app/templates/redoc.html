@@ -2,133 +2,88 @@
 <html>
 <head>
     <title>{{ title }}</title>
-    <!-- needed for adaptive design -->
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="shortcut icon" href="https://fastapi.tiangolo.com/img/favicon.png">
-    <link rel="stylesheet" href="/static/css/redoc-theme.css">
     <style>
-        :root {
-            --accent-color: #9f6eff;
-            --accent-light: #eb5cff;
-            --accent-dark: #4bbdff;
-            --bg-color: #0d0d10;
-            --card-bg: #1a1a24;
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --border-color: rgba(255, 255, 255, 0.12);
-        }
-        
         body {
             margin: 0;
             padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
+            background-color: #0d0d10;
+            color: #ffffff;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        /* Loading animation */
+        /* For showing content during loading */
+        #redoc-content {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in forwards;
+            animation-delay: 1s; /* Start fade in after 1 second */
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        /* Basic styling for the loading overlay */
         #loading {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: var(--bg-color);
+            background-color: #0d0d10;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
+            z-index: 1000;
+            transition: opacity 0.5s ease-out;
         }
         
         .spinner {
             width: 50px;
             height: 50px;
-            border: 3px solid rgba(159, 110, 255, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
-            border-top-color: var(--accent-color);
-            animation: spin 1s ease-in-out infinite;
+            border-top-color: #9f6eff;
+            animation: spin 1s linear infinite;
         }
         
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        
-        /* Direct styling for ReDoc elements */
-        redoc::part(section-title) {
-            color: var(--text-primary) !important;
-        }
-        
-        /* Custom scrollbars */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: var(--bg-color);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent-color);
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-light);
-        }
     </style>
 </head>
 <body>
+    <!-- Loading overlay - will be hidden automatically -->
     <div id="loading">
         <div class="spinner"></div>
-        <div style="margin-top: 16px; color: var(--text-primary);">Loading API Documentation...</div>
+        <p style="margin-top: 20px;">Loading API Documentation...</p>
     </div>
     
-    <!-- Simple ReDoc implementation that doesn't rely on JS initialization -->
-    <redoc spec-url="{{ openapi_url }}"></redoc>
+    <!-- Documentation container -->
+    <div id="redoc-content">
+        <redoc spec-url="{{ openapi_url }}"></redoc>
+    </div>
     
+    <!-- Load ReDoc script -->
     <script src="{{ redoc_js_url }}"></script>
+    
+    <!-- Simple script to hide the loader -->
     <script>
-        // Simple loading management
-        const loadingElement = document.getElementById('loading');
+        // Get elements
+        const loader = document.getElementById('loading');
         
-        // Hide loading after 3 seconds regardless of state
+        // Hide loader after a fixed time (2 seconds)
         setTimeout(() => {
-            if (loadingElement) {
-                loadingElement.style.opacity = '0';
-                loadingElement.style.transition = 'opacity 0.5s';
+            if (loader) {
+                loader.style.opacity = '0';
                 setTimeout(() => {
-                    loadingElement.style.display = 'none';
+                    loader.style.display = 'none';
                 }, 500);
             }
-        }, 3000);
-        
-        // Listen for ReDoc initialization completion
-        document.addEventListener('DOMContentLoaded', function() {
-            // This is a more aggressive approach to force hiding the loader
-            const checkIfLoaded = setInterval(() => {
-                // Look for ReDoc content that indicates it's loaded
-                const redocContent = document.querySelector('redoc [data-section-id]');
-                if (redocContent) {
-                    // Hide loader immediately when content is found
-                    if (loadingElement) {
-                        loadingElement.style.display = 'none';
-                    }
-                    clearInterval(checkIfLoaded);
-                    
-                    // Force a window resize to help ReDoc render correctly
-                    window.dispatchEvent(new Event('resize'));
-                }
-            }, 500); // Check every 500ms
-            
-            // Backup timeout to clean up interval if content isn't found
-            setTimeout(() => {
-                clearInterval(checkIfLoaded);
-            }, 10000);
-        });
+        }, 2000);
     </script>
 </body>
 </html> 
