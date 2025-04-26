@@ -14,6 +14,7 @@ A list of tasks for implementing and improving the ArtGen image generation platf
 - [x] Include code samples for the `/api/v1/generate/` endpoint
 - [x] Update navigation to include API link
 - [x] Create API documentation test script
+- [x] Replace ReDoc with simpler, custom API documentation
 
 ## In Progress Tasks
 - [ ] Improve error handling for API calls

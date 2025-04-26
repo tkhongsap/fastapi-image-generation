@@ -8,6 +8,7 @@ A web application that generates images using OpenAI's GPT Image and DALL-E mode
 - Configure image size, quality, and format
 - Modern, responsive web UI
 - RESTful API for programmatic access
+- Simple, user-friendly API documentation
 - Automatic fallback to DALL-E 3 if GPT Image is not available
 
 ## Setup
@@ -96,6 +97,17 @@ The web interface is accessible at http://localhost:8000/. It provides a user-fr
 3. Generate multiple images at once
 4. Download the generated images
 
+## API Documentation
+
+The API documentation is available at http://localhost:8000/api. It provides:
+
+- Clear endpoint descriptions
+- Required and optional parameters
+- Parameter types and descriptions
+- Response format information
+
+You can also access the raw OpenAPI specification at http://localhost:8000/openapi.json.
+
 ## Project Structure
 
 ```
@@ -121,6 +133,8 @@ fastapi-image-generation/
 │   │   │   ├── app.js
 │   ├── templates/
 │   │   ├── index.html
+│   │   ├── simple_api.html
+│   │   ├── redoc.html
 │   ├── utils/
 │   │   ├── openai_client.py
 │   ├── main.py
