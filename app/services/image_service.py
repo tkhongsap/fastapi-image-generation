@@ -20,7 +20,8 @@ from app.schemas.image import (
     ImageGenerationRequest, 
     ImageGenerationResponse,
     ImageData,
-    UsageInfo
+    UsageInfo,
+    ImageModels
 )
 from app.core.config import settings
 
@@ -65,10 +66,11 @@ async def generate_image(request: ImageGenerationRequest) -> ImageGenerationResp
                 n=request.n,
                 size=request.size.value,
                 quality=request.quality.value if request.model.value == "dall-e-3" else None,
-                response_format="b64_json"
+                response_format="b64_json"  # Always request base64 data for consistent handling
             )
         else:
-            # For GPT Image models, use only required parameters
+            # For GPT Image models, which always return base64 data
+            # Note: response_format is not supported for gpt-image-1
             result = client.images.generate(
                 model=request.model.value,
                 prompt=request.prompt,
@@ -79,13 +81,33 @@ async def generate_image(request: ImageGenerationRequest) -> ImageGenerationResp
         # Process results into our response format
         images = []
         for image in result.data:
-            images.append(
-                ImageData(
-                    b64_json=image.b64_json,
-                    filetype=request.format.value,
-                    size=request.size.value
+            # For gpt-image-1, we should always have b64_json
+            if request.model.value == ImageModels.GPT_IMAGE.value and hasattr(image, 'b64_json'):
+                images.append(
+                    ImageData(
+                        b64_json=image.b64_json,
+                        filetype=request.format.value,
+                        size=request.size.value
+                    )
                 )
-            )
+            # For DALL-E models with b64_json response format
+            elif hasattr(image, 'b64_json') and image.b64_json:
+                images.append(
+                    ImageData(
+                        b64_json=image.b64_json,
+                        filetype=request.format.value,
+                        size=request.size.value
+                    )
+                )
+            # Fallback for URL responses (should not happen with our configuration)
+            elif hasattr(image, 'url') and image.url:
+                logger.warning(f"Unexpected URL response for model {request.model.value}")
+                # We would need to download the image from URL and convert to base64
+                # This branch should not be reached with our current configuration
+                raise Exception(f"URL response format not supported for {request.model.value}")
+            else:
+                logger.error(f"Invalid response format from OpenAI API for model {request.model.value}")
+                raise Exception("Image data missing from API response")
         
         # Construct usage info if available
         usage = None

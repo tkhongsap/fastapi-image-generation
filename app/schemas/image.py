@@ -14,9 +14,10 @@ class ImageSizes(str, Enum):
     """Available image sizes"""
     SMALL = "256x256"  # Only for DALL-E 2
     MEDIUM = "512x512"  # Only for DALL-E 2
-    LARGE = "1024x1024"
-    PORTRAIT = "1024x1792"  # Only for DALL-E 3 and GPT Image
-    LANDSCAPE = "1792x1024"  # Only for DALL-E 3 and GPT Image
+    LARGE = "1024x1024"  # Valid for all models
+    PORTRAIT = "1024x1536"  # Valid for DALL-E 3 and GPT-Image-1
+    LANDSCAPE = "1536x1024"  # Valid for DALL-E 3 and GPT-Image-1
+    AUTO = "auto"  # Only for GPT-Image-1
 
 
 class ImageQualities(str, Enum):
