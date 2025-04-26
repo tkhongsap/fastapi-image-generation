@@ -24,8 +24,9 @@ var/
 venv/
 ENV/
 
-# Environment variables
+# Environment variables and secrets
 .env
+.env.*
 
 # IDEs and editors
 .idea/

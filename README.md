@@ -139,3 +139,15 @@ fastapi-image-generation/
 ## License
 
 MIT 
+
+## Environment Variables & Security
+
+This project uses [python-dotenv](https://pypi.org/project/python-dotenv/) to manage environment variables securely. **Never commit your `.env` file or secrets to version control.**
+
+- The `.env` file is listed in `.gitignore` and will not be tracked by git.
+- You must create your own `.env` file in the project root (see Setup section above).
+- Required variables (e.g., `OPENAI_API_KEY`) are validated at startup. The app will not run if they are missing or invalid.
+- For different environments (development, test, production), use separate `.env` files as needed (e.g., `.env.dev`, `.env.prod`).
+
+**Troubleshooting:**
+If you see errors about missing or invalid environment variables, ensure your `.env` file exists and contains all required keys. Refer to the example in the Setup section. 
