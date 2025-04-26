@@ -1,0 +1,193 @@
+/* ReDoc Theme Customization */
+
+:root {
+  --accent-color: #9f6eff;
+  --accent-light: #eb5cff;
+  --accent-dark: #4bbdff;
+  --bg-color: #0d0d10;
+  --card-bg: #1a1a24;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --border-color: rgba(255, 255, 255, 0.12);
+}
+
+body {
+  background-color: var(--bg-color);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Dark theme base - override redoc styles */
+body, redoc, .redoc-wrap {
+  background-color: var(--bg-color) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Make the code samples more readable */
+pre, code {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace !important;
+  font-size: 13px !important;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-light);
+}
+
+/* ReDoc menu styling */
+.menu-content {
+  background-color: var(--card-bg) !important;
+  border-right: 1px solid var(--border-color) !important;
+}
+
+.menu-content label {
+  color: var(--text-primary) !important;
+}
+
+/* API title styling */
+.api-info h1 {
+  background: linear-gradient(90deg, var(--accent-light), var(--accent-color) 50%, var(--accent-dark));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+
+.api-info p {
+  color: var(--text-secondary) !important;
+}
+
+/* Endpoint sections */
+div[data-section-id] {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  margin-bottom: 16px !important;
+}
+
+/* Method labels */
+span[type="get"], span[type="post"], span[type="put"], span[type="delete"] {
+  border-radius: 4px !important;
+}
+
+/* Links */
+a {
+  color: var(--accent-color) !important;
+}
+
+a:hover {
+  color: var(--accent-light) !important;
+}
+
+/* Operation wrapper */
+[data-section-id] > div {
+  background-color: var(--card-bg) !important;
+}
+
+/* Parameter tables */
+table, .param-name, .param-info, .param-type {
+  color: var(--text-primary) !important;
+  background-color: transparent !important;
+}
+
+/* Code samples and schema sections */
+.react-tabs__tab-panel, .tab-content {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.react-tabs__tab {
+  color: var(--text-secondary) !important;
+}
+
+.react-tabs__tab--selected {
+  color: var(--text-primary) !important;
+  border-bottom: 2px solid var(--accent-color) !important;
+}
+
+/* Schema sections */
+.schema-description, .schema, .schema-arrow {
+  color: var(--text-secondary) !important;
+}
+
+/* Fix for schema toggle buttons */
+.expand-button {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* Response section */
+.response-title, .response-controls {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Models section */
+h3[data-section-id] {
+  color: var(--text-primary) !important;
+}
+
+/* Fix for code blocks */
+.token.string {
+  color: #a5d6ff !important;
+}
+
+.token.number, .token.boolean {
+  color: #ff9580 !important;
+}
+
+.token.property {
+  color: #9f6eff !important;
+}
+
+/* JSON Schema styling */
+.property {
+  color: var(--text-primary) !important;
+}
+
+/* Improve readability */
+redoc api-info h1 {
+  color: var(--text-primary);
+}
+
+redoc api-info p {
+  color: var(--text-secondary);
+}
+
+/* Style the endpoints */
+redoc operation-list operation {
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Make the method labels more visible */
+redoc operation .operation-type {
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+/* Style parameters section */
+redoc params {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+/* Style the API server selection */
+redoc server-dropdown {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+} 

@@ -33,4 +33,80 @@ async def create_image(
         raise HTTPException(
             status_code=500,
             detail=f"Image generation failed: {str(e)}"
-        ) 
+        )
+
+
+# Add OpenAPI documentation code samples
+create_image.openapi_extra = {
+    "x-codeSamples": [
+        {
+            "lang": "curl",
+            "source": """
+curl -X 'POST' \\
+  'https://artgen-api.example.com/api/v1/generate/' \\
+  -H 'accept: application/json' \\
+  -H 'x-api-key: YOUR_API_KEY' \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+  "model": "gpt-image-1",
+  "prompt": "A castle on a cliff at dawn",
+  "n": 1,
+  "size": "1024x1024",
+  "quality": "medium",
+  "format": "png"
+}'
+"""
+        },
+        {
+            "lang": "python",
+            "source": """
+import requests
+import json
+
+url = "https://artgen-api.example.com/api/v1/generate/"
+headers = {
+    "accept": "application/json",
+    "x-api-key": "YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+data = {
+    "model": "gpt-image-1",
+    "prompt": "A castle on a cliff at dawn",
+    "n": 1,
+    "size": "1024x1024",
+    "quality": "medium",
+    "format": "png"
+}
+
+response = requests.post(url, headers=headers, json=data)
+print(json.dumps(response.json(), indent=2))
+"""
+        },
+        {
+            "lang": "javascript",
+            "source": """
+const options = {
+  method: 'POST',
+  headers: {
+    'accept': 'application/json',
+    'x-api-key': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'gpt-image-1',
+    prompt: 'A castle on a cliff at dawn',
+    n: 1,
+    size: '1024x1024',
+    quality: 'medium',
+    format: 'png'
+  })
+};
+
+fetch('https://artgen-api.example.com/api/v1/generate/', options)
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+"""
+        }
+    ]
+} 

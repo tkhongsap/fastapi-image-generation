@@ -243,13 +243,13 @@
     <header>
         <div class="container">
             <div class="header-left">
-                <h1>ArtGen</h1>
-                <p style="margin-top: 0.25rem; font-size: 0.875rem; color: var(--text-secondary);">Image Generation with OpenAI</p>
+                <h1>{{ title.split(' | ')[0] }}</h1>
             </div>
-            <nav class="nav-links">
-                <a href="/" class="nav-link {% if request.url.path == '/' %}active{% endif %}">Home</a>
-                <a href="/help" class="nav-link {% if request.url.path == '/help' %}active{% endif %}">Help</a>
-            </nav>
+            <div class="nav-links">
+                <a class="nav-link {{ 'active' if request.url.path == '/' }}" href="/">Home</a>
+                <a class="nav-link {{ 'active' if request.url.path == '/help' }}" href="/help">Help</a>
+                <a class="nav-link {{ 'active' if request.url.path in ['/api', '/docs'] }}" href="/api">API</a>
+            </div>
         </div>
     </header>
 

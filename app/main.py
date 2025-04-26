@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 
 from app.api.v1.api import api_router
 from app.core.config import settings
@@ -46,9 +47,14 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     description=settings.PROJECT_DESCRIPTION,
     version=settings.VERSION,
-    docs_url="/api/docs",
-    redoc_url="/api/redoc",
-    openapi_url="/api/openapi.json",
+    docs_url=None,
+    redoc_url=None,
+    openapi_url="/openapi.json",
+    openapi_version="3.0.2",
+    openapi_tags=[{
+        "name": "image-generation",
+        "description": "Endpoints for generating images using OpenAI models"
+    }]
 )
 
 # Configure CORS
@@ -84,6 +90,61 @@ async def root(request: Request):
     return templates.TemplateResponse(
         "index.html", 
         {"request": request, "title": settings.PROJECT_NAME}
+    )
+
+# API Documentation with Swagger UI
+@app.get("/docs", include_in_schema=False)
+async def swagger_ui(request: Request):
+    """Serve custom Swagger UI"""
+    return templates.TemplateResponse(
+        "api.html", 
+        {
+            "request": request, 
+            "title": f"API Documentation | {settings.PROJECT_NAME}",
+            "active_doc": "swagger",
+            "doc_url": "/swagger-ui"
+        }
+    )
+
+# API Documentation with ReDoc
+@app.get("/api", include_in_schema=False)
+async def redoc_ui(request: Request):
+    """Serve custom ReDoc UI"""
+    return templates.TemplateResponse(
+        "api.html", 
+        {
+            "request": request, 
+            "title": f"API Reference | {settings.PROJECT_NAME}",
+            "active_doc": "redoc",
+            "doc_url": "/redoc"
+        }
+    )
+
+# Raw Swagger UI
+@app.get("/swagger-ui", include_in_schema=False)
+async def swagger_ui_html(request: Request):
+    """Serve raw Swagger UI HTML"""
+    return templates.TemplateResponse(
+        "swagger.html", 
+        {
+            "request": request,
+            "title": f"{settings.PROJECT_NAME} - API Documentation",
+            "openapi_url": "/openapi.json"
+        }
+    )
+
+# Raw ReDoc UI
+@app.get("/redoc", include_in_schema=False)
+async def redoc_ui_html(request: Request):
+    """Serve raw ReDoc HTML"""
+    return templates.TemplateResponse(
+        "redoc.html", 
+        {
+            "request": request,
+            "title": f"{settings.PROJECT_NAME} - API Reference",
+            "openapi_url": "/openapi.json",
+            "redoc_js_url": "https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"
+        }
     )
 
 # Help page endpoint

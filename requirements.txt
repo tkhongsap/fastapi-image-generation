@@ -8,4 +8,5 @@ openai==1.10.0
 pydantic==2.5.3
 loguru==0.7.2
 gunicorn==21.2.0
-markdown==3.5.1 
+markdown==3.5.1
+psutil==5.9.5 

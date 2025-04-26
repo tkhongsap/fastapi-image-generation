@@ -53,7 +53,7 @@ Always review the most current OpenAI policies for image generation usage rights
 
 ## Contact
 
-Need more help? Contact us at support@artgen-example.com or visit our [GitHub repository](https://github.com/example/artgen).
+Need more help? Contact us at support@artgen-example.com or visit our [GitHub repository](https://github.com/tkhongsap/fastapi-image-generation).
 
 ---
 

@@ -1,3 +1,32 @@
+# ArtGen Project Tasks
+
+A list of tasks for implementing and improving the ArtGen image generation platform.
+
+## Completed Tasks
+- [x] Initialize project with FastAPI
+- [x] Set up basic application structure
+- [x] Create image generation endpoint `/api/v1/generate/`
+- [x] Implement OpenAI client for image generation
+- [x] Create web UI with image generation form
+- [x] Add help page with markdown rendering
+- [x] Add API documentation with custom styling
+- [x] Add Swagger UI and ReDoc for API documentation
+- [x] Include code samples for the `/api/v1/generate/` endpoint
+- [x] Update navigation to include API link
+- [x] Create API documentation test script
+
+## In Progress Tasks
+- [ ] Improve error handling for API calls
+- [ ] Add user authentication system
+- [ ] Implement image history storage
+
+## Upcoming Tasks
+- [ ] Add model comparison feature
+- [ ] Create playground for testing different prompts
+- [ ] Implement batch processing for multiple images
+- [ ] Develop CLI tool for API access
+- [ ] Add API usage analytics dashboard
+
 # ArtGen FastAPI Image Generation Project
 
 A FastAPI web application that provides a simple interface for generating images using OpenAI's image models.

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@4/swagger-ui.css">
+    <link rel="shortcut icon" href="https://fastapi.tiangolo.com/img/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>{{ title }}</title>
+    <style>
+        :root {
+            --accent-color: #9f6eff;
+            --accent-light: #eb5cff;
+            --accent-dark: #4bbdff;
+            --bg-color: #0d0d10;
+            --card-bg: #1a1a24;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(255, 255, 255, 0.12);
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .swagger-ui .topbar {
+            background: linear-gradient(90deg, var(--accent-light), var(--accent-color) 50%, var(--accent-dark));
+        }
+        
+        /* Make the buttons match our theme */
+        .swagger-ui .btn.execute {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .swagger-ui .btn.authorize {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+        
+        /* Make code sections more readable */
+        .swagger-ui textarea, .swagger-ui input {
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+        }
+        
+        /* Override default swagger font */
+        .swagger-ui, .swagger-ui .opblock-tag, .swagger-ui .opblock .opblock-summary-operation-id, 
+        .swagger-ui .opblock .opblock-summary-path, .swagger-ui .opblock .opblock-summary-description {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        /* Improve section highlighting */
+        .swagger-ui .opblock {
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div id="swagger-ui">
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@4/swagger-ui-bundle.js"></script>
+    <!-- `SwaggerUIBundle` is now available on the page -->
+    <script>
+        const ui = SwaggerUIBundle({
+            url: '{{ openapi_url }}',
+            dom_id: '#swagger-ui',
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIBundle.SwaggerUIStandalonePreset
+            ],
+            layout: "BaseLayout",
+            deepLinking: true,
+            showExtensions: true,
+            showCommonExtensions: true,
+            docExpansion: "list",
+            defaultModelsExpandDepth: 3
+        });
+    </script>
+</body>
+</html> 
