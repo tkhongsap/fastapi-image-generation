@@ -3,29 +3,146 @@
 {% block additional_styles %}
 <style>
     .help-container {
-        max-width: 900px;
+        max-width: 1100px;
         margin: 0 auto;
+    }
+    
+    .help-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    /* Sidebar TOC for desktop */
+    .toc-container {
+        display: none;
+    }
+    
+    .toc-sticky {
+        position: sticky;
+        top: 100px; 
+        background-color: var(--card-bg);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        border: 1px solid var(--border-color);
+        font-size: 0.875rem;
+    }
+    
+    .toc-sticky h3 {
+        margin-top: 0;
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+    }
+    
+    .toc-sticky ul {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 0;
+    }
+    
+    .toc-sticky li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .toc-sticky a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.2s;
+        display: block;
+        padding: 0.25rem 0;
+    }
+    
+    .toc-sticky a:hover {
+        color: var(--text-primary);
+    }
+    
+    /* Mobile TOC that appears at the top */
+    .toc-mobile {
+        margin-bottom: 1.5rem;
+        background-color: var(--card-bg);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        border: 1px solid var(--border-color);
+    }
+    
+    .toc-mobile h3 {
+        margin-top: 0;
+        margin-bottom: 0.75rem;
+    }
+    
+    .toc-mobile ul {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1rem;
+    }
+    
+    /* Desktop layout */
+    @media (min-width: 1024px) {
+        .help-layout {
+            flex-direction: row;
+            align-items: flex-start;
+        }
+        
+        .toc-container {
+            display: block;
+            width: 250px;
+            flex-shrink: 0;
+        }
+        
+        .toc-mobile {
+            display: none;
+        }
+        
+        .content-container {
+            flex: 1;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <div class="help-container card">
-        <div class="toc">
-            <h3>On this page</h3>
-            <ul>
-                <li><a href="#quick-start">Quick Start</a></li>
-                <li><a href="#prompt-tips">Prompt Tips</a></li>
-                <li><a href="#advanced-options-explained">Advanced Options</a></li>
-                <li><a href="#download-rights">Download & Rights</a></li>
-                <li><a href="#troubleshooting">Troubleshooting</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
+    <div class="help-container">
+        <div class="help-layout">
+            <!-- Sidebar TOC (desktop) -->
+            <div class="toc-container">
+                <div class="toc-sticky">
+                    <h3>On this page</h3>
+                    <ul>
+                        <li><a href="#quick-start">Quick Start</a></li>
+                        <li><a href="#prompt-tips">Prompt Tips</a></li>
+                        <li><a href="#advanced-options-explained">Advanced Options</a></li>
+                        <li><a href="#download-rights">Download & Rights</a></li>
+                        <li><a href="#troubleshooting">Troubleshooting</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main content -->
+            <div class="content-container card">
+                <!-- Mobile TOC -->
+                <div class="toc-mobile">
+                    <h3>On this page</h3>
+                    <ul>
+                        <li><a href="#quick-start">Quick Start</a></li>
+                        <li><a href="#prompt-tips">Prompt Tips</a></li>
+                        <li><a href="#advanced-options-explained">Advanced Options</a></li>
+                        <li><a href="#download-rights">Download & Rights</a></li>
+                        <li><a href="#troubleshooting">Troubleshooting</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Content -->
+                <article class="prose">
+                    {{ content|safe }}
+                </article>
+            </div>
         </div>
-        <article class="prose">
-            {{ content|safe }}
-        </article>
     </div>
 </div>
 {% endblock %} 
