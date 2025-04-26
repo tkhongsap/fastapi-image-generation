@@ -168,76 +168,92 @@
         // Handle loading state
         const loadingElement = document.getElementById('loading');
         
-        // Configure ReDoc options
-        Redoc.init('{{ openapi_url }}', {
-            scrollYOffset: 0,
-            hideDownloadButton: false,
-            expandResponses: '200,201',
-            pathInMiddlePanel: true,
-            theme: {
-                colors: {
-                    primary: {
-                        main: '#9f6eff'
-                    },
-                    text: {
-                        primary: '#ffffff',
-                        secondary: 'rgba(255, 255, 255, 0.7)'
-                    },
-                    responses: {
-                        success: {
-                            color: '#22c55e',
-                            backgroundColor: 'rgba(34, 197, 94, 0.1)'
-                        },
-                        error: {
-                            color: '#ef4444',
-                            backgroundColor: 'rgba(239, 68, 68, 0.1)'
-                        },
-                        redirect: {
-                            color: '#f59e0b',
-                            backgroundColor: 'rgba(245, 158, 11, 0.1)'
-                        },
-                        info: {
-                            color: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)'
-                        }
-                    },
-                    http: {
-                        get: '#22c55e',
-                        post: '#3b82f6',
-                        put: '#f59e0b',
-                        delete: '#ef4444'
-                    }
-                },
-                typography: {
-                    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-                    fontSize: '16px',
-                    lineHeight: '1.5',
-                    headings: {
-                        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-                        fontWeight: '600'
-                    },
-                    code: {
-                        fontFamily: "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace",
-                        fontSize: '13px'
-                    }
-                },
-                sidebar: {
-                    backgroundColor: '#1a1a24',
-                    textColor: '#ffffff',
-                    activeTextColor: '#9f6eff'
-                },
-                shape: {
-                    borderRadius: '8px'
-                }
+        // Add a timeout to hide the loading indicator if it takes too long
+        const loadingTimeout = setTimeout(() => {
+            if (loadingElement.style.display !== 'none') {
+                loadingElement.style.display = 'none';
+                console.info('Loading timeout reached, hiding loading indicator');
             }
-        }).then(() => {
-            // Hide loading indicator once ReDoc is loaded
-            loadingElement.style.display = 'none';
-            
-            // Ensure heights are calculated correctly
-            setTimeout(() => {
-                window.dispatchEvent(new Event('resize'));
-            }, 300);
+        }, 5000); // 5 second timeout
+        
+        // Listen for the DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Simplified initialization approach
+                const options = {
+                    scrollYOffset: 0,
+                    hideDownloadButton: false,
+                    expandResponses: '200,201',
+                    theme: {
+                        colors: {
+                            primary: { main: '#9f6eff' },
+                            text: {
+                                primary: '#ffffff',
+                                secondary: 'rgba(255, 255, 255, 0.7)'
+                            },
+                            http: {
+                                get: '#22c55e',
+                                post: '#3b82f6',
+                                put: '#f59e0b',
+                                delete: '#ef4444'
+                            }
+                        },
+                        typography: {
+                            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+                            fontSize: '16px',
+                            headings: { fontWeight: '600' },
+                            code: { fontFamily: "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace" }
+                        },
+                        sidebar: {
+                            backgroundColor: '#1a1a24',
+                            textColor: '#ffffff',
+                            activeTextColor: '#9f6eff'
+                        }
+                    }
+                };
+                
+                // Initialize ReDoc with the OpenAPI spec URL
+                Redoc.init('{{ openapi_url }}', options)
+                    .then(() => {
+                        // Success! Hide the loading indicator
+                        loadingElement.style.display = 'none';
+                        clearTimeout(loadingTimeout);
+                        
+                        // Force redoc to recalculate heights correctly
+                        setTimeout(() => {
+                            window.dispatchEvent(new Event('resize'));
+                        }, 300);
+                    })
+                    .catch(error => {
+                        console.error('ReDoc initialization error:', error);
+                        loadingElement.style.display = 'none';
+                        clearTimeout(loadingTimeout);
+                        
+                        // Show a simple error message
+                        document.querySelector('redoc').innerHTML = `
+                            <div style="padding: 2rem; text-align: center;">
+                                <h2 style="color: var(--text-primary);">Error Loading API Documentation</h2>
+                                <p style="color: var(--text-secondary);">
+                                    There was a problem loading the API documentation.
+                                    Please try refreshing the page.
+                                </p>
+                                <button onclick="location.reload()" style="
+                                    background: var(--accent-color);
+                                    color: white;
+                                    border: none;
+                                    padding: 0.5rem 1rem;
+                                    border-radius: 4px;
+                                    cursor: pointer;
+                                    margin-top: 1rem;
+                                ">Refresh Page</button>
+                            </div>
+                        `;
+                    });
+            } catch (e) {
+                console.error('Error in ReDoc setup:', e);
+                loadingElement.style.display = 'none';
+                clearTimeout(loadingTimeout);
+            }
         });
     </script>
 </body>

@@ -151,10 +151,47 @@
     const apiFrame = document.getElementById('api-frame');
     const loadingIndicator = document.getElementById('loading');
     
+    // Add a timeout to hide the loading indicator if it takes too long
+    const loadingTimeout = setTimeout(() => {
+        if (loadingIndicator.style.display !== 'none') {
+            loadingIndicator.style.display = 'none';
+            apiFrame.style.opacity = 1;
+            console.info('Loading timeout reached, showing iframe content');
+        }
+    }, 5000); // 5 second timeout
+    
     // Hide loading indicator once iframe is loaded
     apiFrame.addEventListener('load', function() {
         loadingIndicator.style.display = 'none';
         apiFrame.style.opacity = 1;
+        clearTimeout(loadingTimeout);
+    });
+    
+    // Handle iframe loading errors
+    apiFrame.addEventListener('error', function() {
+        loadingIndicator.style.display = 'none';
+        clearTimeout(loadingTimeout);
+        
+        // Show error message in the container
+        const container = document.querySelector('.api-container');
+        container.innerHTML += `
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; padding: 2rem;">
+                <h2 style="color: var(--text-primary);">Error Loading Documentation</h2>
+                <p style="color: var(--text-secondary);">
+                    There was a problem loading the API documentation.
+                    Please try refreshing the page or selecting a different documentation format.
+                </p>
+                <button onclick="location.reload()" style="
+                    background: var(--accent-color);
+                    color: white;
+                    border: none;
+                    padding: 0.5rem 1rem;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    margin-top: 1rem;
+                ">Refresh Page</button>
+            </div>
+        `;
     });
     
     // Ensure iframe content fills available space
