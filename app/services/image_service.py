@@ -16,7 +16,6 @@ from app.utils.openai_utils import (
     reinitialize_client_if_needed,
     cleanup_client
 )
-from app.utils.openai_client import initialize_openai_client
 from app.schemas.image import (
     ImageGenerationRequest, 
     ImageGenerationResponse,
@@ -29,8 +28,8 @@ from app.core.config import settings
 # Configure logging
 logger = logging.getLogger(__name__)
 
-# Initialize OpenAI client on module import
-client, active_model, fallback_mode = initialize_openai_client()
+# Note: We no longer initialize the client here.
+# The client is initialized in app/utils/openai_client.py which happens during application startup
 
 
 async def generate_image(request: ImageGenerationRequest) -> ImageGenerationResponse:
@@ -46,13 +45,14 @@ async def generate_image(request: ImageGenerationRequest) -> ImageGenerationResp
     Raises:
         Exception: If the OpenAI API call fails
     """
-    # Ensure client is initialized
-    if reinitialize_client_if_needed():
-        logger.info("OpenAI client was reinitialized during the request")
+    # Always attempt to reinitialize if needed
+    reinitialize_client_if_needed()
     
+    # Get the client (should never be None now)
     client = get_client()
     if not client:
-        raise Exception("OpenAI client could not be initialized")
+        logger.error("Critical error: OpenAI client is None even after reinitialization")
+        raise Exception("OpenAI client could not be initialized. Check API key and network connection.")
     
     # Log the generation request
     logger.info(f"Image generation request: model={request.model.value}, prompt={request.prompt[:30]}...")
@@ -113,11 +113,26 @@ async def generate_image(request: ImageGenerationRequest) -> ImageGenerationResp
         # Construct usage info if available
         usage = None
         if hasattr(result, 'usage'):
-            usage = UsageInfo(
-                prompt_tokens=result.usage.prompt_tokens,
-                image_tokens=result.usage.total_tokens - result.usage.prompt_tokens,
-                total_tokens=result.usage.total_tokens
-            )
+            # Check if usage has prompt_tokens or if it's a dictionary
+            if isinstance(result.usage, dict):
+                # GPT-image-1 might return a different format
+                usage = UsageInfo(
+                    prompt_tokens=result.usage.get('prompt_tokens', 0),
+                    image_tokens=result.usage.get('total_tokens', 0) - result.usage.get('prompt_tokens', 0),
+                    total_tokens=result.usage.get('total_tokens', 0)
+                )
+            else:
+                # Standard format with prompt_tokens as attributes
+                try:
+                    usage = UsageInfo(
+                        prompt_tokens=result.usage.prompt_tokens,
+                        image_tokens=result.usage.total_tokens - result.usage.prompt_tokens,
+                        total_tokens=result.usage.total_tokens
+                    )
+                except AttributeError:
+                    # If any attributes are missing, log and continue without usage info
+                    logger.warning(f"Incomplete usage information in response: {result.usage}")
+                    usage = None
         
         # Build the response
         response = ImageGenerationResponse(
