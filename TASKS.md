@@ -48,4 +48,25 @@ A brief description of tasks for implementing the visual refresh according to th
 - [x] Fix backdrop-filter support for cross-browser compatibility
 - [x] Add fallback styles for browsers without backdrop-filter
 - [x] Implement decorative background elements
-- [x] Add glow effects to interactive elements 
+- [x] Add glow effects to interactive elements
+
+# Help Page Implementation
+
+A comprehensive user manual for the ArtGen image generation application.
+
+## Completed Tasks
+- [x] Created docs/help.md with comprehensive content following PRD specs
+- [x] Created base.html template for consistent site layout
+- [x] Updated index.html to extend base template
+- [x] Created help.html template with TOC
+- [x] Added /help route to main.py
+- [x] Updated requirements.txt to include markdown library
+
+## In Progress Tasks
+- [ ] Test the help page to ensure it renders correctly
+
+## Upcoming Tasks
+- [ ] Gather user feedback on help page content
+- [ ] Add more specific examples to prompt tips section
+- [ ] Consider adding images/screenshots to illustrate key features
+- [ ] Add analytics to track help page usage 

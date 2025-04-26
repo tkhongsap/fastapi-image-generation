@@ -1,103 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Reset and base styles */
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        :root {
-            --accent-color: #9f6eff;
-            --accent-light: #eb5cff;
-            --accent-dark: #4bbdff;
-            --bg-color: #0d0d10;
-            --card-bg: #1a1a24;
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --border-color: rgba(255, 255, 255, 0.12);
-        }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            line-height: 1.5;
-            min-height: 100vh;
-            padding: 0;
-            margin: 0;
-        }
-        
-        /* Typography */
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, #eb5cff, #9f6eff 50%, #4bbdff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin: 0;
-        }
-        
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 0 0 1rem 0;
-        }
-        
-        p {
-            margin-bottom: 1rem;
-        }
-        
-        /* Layout */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-        
-        header {
-            background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        main {
-            padding: 2rem 0;
-        }
-        
-        .app-layout {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-        
-        @media (min-width: 768px) {
-            .app-layout {
-                flex-direction: row;
-                align-items: flex-start;
-            }
-        }
-        
-        /* Cards */
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 1rem;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            padding: 1.5rem;
-        }
-        
+{% extends "base.html" %}
+
+{% block additional_styles %}
+<style>
         /* Controls */
         .control-panel {
             width: 100%;
@@ -369,110 +273,88 @@
         .hidden {
             display: none !important;
         }
-        
-        footer {
-            padding: 2rem 0;
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-    </style>
-    <script src="/static/js/app.js" defer></script>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>ArtGen</h1>
-            <p style="margin-top: 0.25rem; font-size: 0.875rem; color: var(--text-secondary);">Image Generation with OpenAI</p>
-        </div>
-    </header>
+</style>
+{% endblock %}
 
-    <main>
-        <div class="container">
-            <div class="app-layout">
-                <!-- Control Panel (Left Side) -->
-                <section class="control-panel card">
+{% block scripts %}
+<script src="/static/js/app.js" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="app-layout">
+        <!-- Control Panel (Left Side) -->
+        <section class="control-panel card">
+            <div class="form-group">
+                <label for="prompt">Prompt</label>
+                <textarea id="prompt" rows="5" placeholder="Describe the image you want to generate...">A castle on a cliff at dawn with dramatic lighting</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="model">Model</label>
+                <select id="model">
+                    <option value="gpt-image-1" selected>GPT Image</option>
+                    <option value="dall-e-3">DALL·E 3</option>
+                    <option value="dall-e-2">DALL·E 2</option>
+                </select>
+            </div>
+            
+            <details class="advanced-options">
+                <summary>Advanced Options</summary>
+                <div class="advanced-options-content">
                     <div class="form-group">
-                        <label for="prompt">Prompt</label>
-                        <textarea id="prompt" rows="5" placeholder="Describe the image you want to generate...">A castle on a cliff at dawn with dramatic lighting</textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="model">Model</label>
-                        <select id="model">
-                            <option value="gpt-image-1" selected>GPT Image</option>
-                            <option value="dall-e-3">DALL·E 3</option>
-                            <option value="dall-e-2">DALL·E 2</option>
+                        <label for="size">Size</label>
+                        <select id="size">
+                            <option value="1024x1024" selected>Square (1024×1024)</option>
+                            <option value="1792x1024">Landscape (1792×1024)</option>
+                            <option value="1024x1792">Portrait (1024×1792)</option>
                         </select>
                     </div>
                     
-                    <details class="advanced-options">
-                        <summary>Advanced Options</summary>
-                        <div class="advanced-options-content">
-                            <div class="form-group">
-                                <label for="size">Size</label>
-                                <select id="size">
-                                    <option value="1024x1024" selected>Square (1024×1024)</option>
-                                    <option value="1792x1024">Landscape (1792×1024)</option>
-                                    <option value="1024x1792">Portrait (1024×1792)</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="quality">Quality</label>
-                                <select id="quality">
-                                    <option value="medium" selected>Medium</option>
-                                    <option value="standard">Standard</option>
-                                    <option value="hd">HD (DALL·E 3 only)</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group" style="margin-bottom: 0;">
-                                <label for="count">Number of Images</label>
-                                <input type="number" id="count" min="1" max="10" value="1">
-                            </div>
-                        </div>
-                    </details>
-                    
-                    <button id="generate-btn" class="btn btn-primary">Generate Image</button>
-                </section>
-                
-                <!-- Results Panel (Right Side) -->
-                <section class="results-panel card">
-                    <div class="results-header">
-                        <h2>Generated Images</h2>
-                        <p id="status" class="status-badge">Ready to generate</p>
+                    <div class="form-group">
+                        <label for="quality">Quality</label>
+                        <select id="quality">
+                            <option value="medium" selected>Medium</option>
+                            <option value="standard">Standard</option>
+                            <option value="hd">HD (DALL·E 3 only)</option>
+                        </select>
                     </div>
                     
-                    <div id="loading" class="loading hidden">
-                        <div class="spinner"></div>
-                        <p style="color: var(--text-secondary);">Generating your images...</p>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="count">Number of Images</label>
+                        <input type="number" id="count" min="1" max="10" value="1">
                     </div>
-                    
-                    <div id="gallery" class="image-gallery"></div>
-                    
-                    <template id="image-template">
-                        <div class="image-container">
-                            <img src="" alt="Generated image">
-                            <div class="image-actions">
-                                <button class="btn btn-small btn-icon download-btn" title="Download Image">
-                                    <span class="icon">⬇️</span> Download
-                                </button>
-                            </div>
-                        </div>
-                    </template>
-                </section>
+                </div>
+            </details>
+            
+            <button id="generate-btn" class="btn btn-primary">Generate Image</button>
+        </section>
+        
+        <!-- Results Panel (Right Side) -->
+        <section class="results-panel card">
+            <div class="results-header">
+                <h2>Generated Images</h2>
+                <p id="status" class="status-badge">Ready to generate</p>
             </div>
-        </div>
-    </main>
-    
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 ArtGen FastAPI Service</p>
-        </div>
-    </footer>
-    
-    <!-- Toast notification system -->
-    <div id="toast-container"></div>
-</body>
-</html> 
+            
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <p style="color: var(--text-secondary);">Generating your images...</p>
+            </div>
+            
+            <div id="gallery" class="image-gallery"></div>
+            
+            <template id="image-template">
+                <div class="image-container">
+                    <img src="" alt="Generated image">
+                    <div class="image-actions">
+                        <button class="btn btn-small btn-icon download-btn" title="Download Image">
+                            <span class="icon">⬇️</span> Download
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </section>
+    </div>
+</div>
+{% endblock %} 

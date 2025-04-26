@@ -4,9 +4,11 @@ Main FastAPI application entry point
 
 import logging
 import os
+import markdown
+from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -83,6 +85,48 @@ async def root(request: Request):
         "index.html", 
         {"request": request, "title": settings.PROJECT_NAME}
     )
+
+# Help page endpoint
+@app.get("/help", response_class=HTMLResponse, include_in_schema=False)
+async def help_page(request: Request):
+    """Serve the help page"""
+    try:
+        help_md_path = Path("docs/help.md")
+        if not help_md_path.exists():
+            logger.error(f"Help markdown file not found at {help_md_path}")
+            return templates.TemplateResponse(
+                "help.html", 
+                {
+                    "request": request, 
+                    "title": f"Help | {settings.PROJECT_NAME}",
+                    "content": "<h1>Help Content Unavailable</h1><p>The help documentation is currently unavailable. Please try again later.</p>"
+                }
+            )
+        
+        md_content = help_md_path.read_text(encoding="utf-8")
+        html_content = markdown.markdown(
+            md_content, 
+            extensions=['fenced_code', 'tables', 'toc']
+        )
+        
+        return templates.TemplateResponse(
+            "help.html", 
+            {
+                "request": request, 
+                "title": f"Help | {settings.PROJECT_NAME}",
+                "content": html_content
+            }
+        )
+    except Exception as e:
+        logger.error(f"Error rendering help page: {str(e)}")
+        return templates.TemplateResponse(
+            "help.html", 
+            {
+                "request": request, 
+                "title": f"Help | {settings.PROJECT_NAME}",
+                "content": f"<h1>Error Loading Help</h1><p>An error occurred while loading the help content: {str(e)}</p>"
+            }
+        )
 
 # Health check endpoint
 @app.get("/health", include_in_schema=False)

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block additional_styles %}
+<style>
+    .help-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="help-container card">
+        <div class="toc">
+            <h3>On this page</h3>
+            <ul>
+                <li><a href="#quick-start">Quick Start</a></li>
+                <li><a href="#prompt-tips">Prompt Tips</a></li>
+                <li><a href="#advanced-options-explained">Advanced Options</a></li>
+                <li><a href="#download-rights">Download & Rights</a></li>
+                <li><a href="#troubleshooting">Troubleshooting</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+        <article class="prose">
+            {{ content|safe }}
+        </article>
+    </div>
+</div>
+{% endblock %} 
